@@ -1,0 +1,160 @@
+.task-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-list-title {
+  padding: 0.2rem 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #0079bf;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+}
+
+.task-list-title:hover {
+  background-color: #156aa6;
+}
+
+.task-list-title:active {
+  background-color: #005ea2;
+}
+
+.task-list-title-input {
+  width: 100%;
+  padding: 0.2rem 0.5rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  color: #fff;
+  background-color: #0079bf;
+  border-radius: 3px;
+  margin-bottom: 0.5rem;
+  border: none;
+}
+
+.task-list-title-input:focus {
+  background-color: #fff;
+  color: #172b4d;
+}
+
+.task-list-title-input::placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-moz-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-moz-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-moz-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-moz-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::ms-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-webkit-input-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input::-moz-placeholder {
+  color: #fff;
+}
+
+.task-list-title-input:-ms-input-placeholder {
+  color: #fff;
+}
