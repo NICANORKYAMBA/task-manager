@@ -1,0 +1,38 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: silver;
+}
+
+header {
+    background-color: #1c1b29;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+main {
+    flex-grow: 1;
+    padding: 20px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+footer {
+    background-color: #1c1b29;
+    color: #436b6d;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}

@@ -7,6 +7,10 @@ const TaskList = () => {
   const dispatch = useDispatch();
   const tasks = useSelector((state) => state.tasks);
 
+  if (!Array.isArray(tasks)) {
+    return <div>No Tasks Available</div>
+  }
+
   useEffect(() => {
     dispatch(fetchTasks());
   }, [dispatch]);

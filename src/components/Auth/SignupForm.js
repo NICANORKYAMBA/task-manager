@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { signup } from '../../actions/authActions';
+import '../../styles/SignupForm.css';
 
 // Signup form component
 const SignupForm = () => {
