@@ -13,11 +13,22 @@ body {
 header {
     background-color: #1c1b29;
     color: #fff;
-    padding: 10px;
+    padding: 30px;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+nav {
+    background-color: #11756d;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1200px;
 }
 
 main {
@@ -30,9 +41,11 @@ main {
 footer {
     background-color: #1c1b29;
     color: #436b6d;
-    padding: 10px;
+    padding: 30px;
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
+    display: flex;
+    justify-content: center;
 }
