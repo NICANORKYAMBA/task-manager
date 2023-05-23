@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchTasks } from '../../actions/taskActions';
+import '../../styles/TaskList.css'; 
 import TaskItem from './TaskItem';
 
 const TaskList = () => {
