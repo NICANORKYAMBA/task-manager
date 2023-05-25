@@ -32,20 +32,20 @@ const LoginForm = () => {
         <h2 className="login-form__title">Login</h2>
       </div>
       <div className="login-form__body">
-        <div className="form-group">
+        <div className="login-form-group">
           <label htmlFor="email">Email</label>
           <input
-            className="form-control"
+            className="login-form-control"
             id="email"
             type="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
         </div>
-        <div className="form-group">
+        <div className="login-form-group">
           <label htmlFor="password">Password</label>
           <input
-            className="form-control"
+            className="login-form-control"
             id="password"
             type="password"
             value={password}
@@ -56,9 +56,8 @@ const LoginForm = () => {
           Login
         </button>
         <div className="login-form__google">
-          <button className="login-form__google-button" type="button" onClick={handleGoogleLogin}>
-            <img src="/images/google-logo.png" alt="Google logo" />
-            <span>Sign in with Google</span>
+          <p>Or login with your Google account</p>
+          <button className="google-login-button" onClick={handleGoogleLogin}>
           </button>
         </div>
       </div>

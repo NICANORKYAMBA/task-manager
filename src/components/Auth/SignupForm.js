@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { signup } from '../../actions/authActions';
+import { signup, signupWithGoogle } from '../../actions/authActions';
 import '../../styles/SignupForm.css';
 
 // SignupForm component
@@ -20,7 +20,7 @@ const SignupForm = () => {
 
     // Handle Google signup
     const handleGoogleSignup = () => {
-        window.open('http://localhost:5000/api/auth/google', '_self');
+        dispatch(signupWithGoogle());
     };
 
     // Return the JSX element
@@ -30,30 +30,30 @@ const SignupForm = () => {
                 <h2 className="signup-form__title">Signup</h2>
             </div>
             <div className="signup-form__body">
-                <div className="form-group">
+                <div className="signup-form-group">
                     <label htmlFor="username">Username</label>
                     <input
-                        className="form-control"
+                        className="signup-form-control"
                         id="username"
                         type="text"
                         value={username}
                         onChange={(event) => setUsername(event.target.value)}
                     />
                 </div>
-                <div className="form-group">
+                <div className="signup-form-group">
                     <label htmlFor="email">Email</label>
                     <input
-                        className="form-control"
+                        className="signup-form-control"
                         id="email"
                         type="email"
                         value={email}
                         onChange={(event) => setEmail(event.target.value)}
                     />
                 </div>
-                <div className="form-group">
+                <div className="signup-form-group">
                     <label htmlFor="password">Password</label>
                     <input
-                        className="form-control"
+                        className="signup-form-control"
                         id="password"
                         type="password"
                         value={password}
@@ -63,8 +63,7 @@ const SignupForm = () => {
                 <button className="signup-form__button" type="submit">Signup</button>
                 <div className="signup-form__google">
                     <p>Or signup with your Google account</p>
-                    <button className="google-login-button" onClick={handleGoogleSignup}>
-                        <img src="google-icon.png" alt="Google Icon" />
+                    <button className="google-signup-button" onClick={handleGoogleSignup}>
                     </button>
                 </div>
             </div>

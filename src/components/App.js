@@ -26,7 +26,7 @@ const App = () => {
         </main>
         <footer className="app__footer">
           {/* Footer content */}
-          <p>&copy; 2023 My Todo Task Manager</p>
+          <p>&copy; 2023 My Alx Portfolio Project</p>
         </footer>
       </div>
     </Router>
