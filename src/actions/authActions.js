@@ -59,6 +59,22 @@ export const login = (credentials) => {
     };
 };
 
+export const loginWithGoogle = () => {
+    return async dispatch => {
+        try {
+            // Send a GET request to /api/login/google
+            const response = await api.get('/api/login/google');
+            const user = response.data;
+
+            // Dispatch LOGIN_SUCCESS action
+            dispatch(loginSuccess(user));
+        } catch (error) {
+            // Dispatch LOGIN_FAILURE action
+            dispatch(loginFailure(error.response.data.error));
+        }
+    };
+};
+
 export const signup = (credentials) => {
     return async dispatch => {
         try {
@@ -68,6 +84,21 @@ export const signup = (credentials) => {
 
             // Dispatch SIGNUP_SUCCESS action
             dispatch(signupSuccess(user));
+        } catch (error) {
+            // Dispatch SIGNUP_FAILURE action
+            dispatch(signupFailure(error.response.data.error));
+        }
+    };
+};
+
+export const signupWithGoogle = () => {
+    return async dispatch => {
+        try {
+            // Send a GET request to /api/signup/google
+            const response = await api.get('/api/signup/google');
+
+            // Dispatch SIGNUP_SUCCESS action
+            dispatch(signupSuccess(response.data));
         } catch (error) {
             // Dispatch SIGNUP_FAILURE action
             dispatch(signupFailure(error.response.data.error));

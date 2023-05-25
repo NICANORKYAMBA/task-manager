@@ -1,17 +1,77 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import LoginForm from './Auth/LoginForm';
 import SignupForm from './Auth/SignupForm';
-import GoogleLoginButton from './Auth/GoogleLoginButton';
 import '../styles/App.css';
 import TaskList from './Task/TaskList';
 
+const App = () => {
+  // Check if the user is authenticated
+  const isAuthenticated = true;
+  
+  return (
+    <Router>
+      <div className="app">
+        <header className="app__header">
+          <NavigationBar />
+        </header>
+        <main className="app__main">
+          {/* Main content */}
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/signup" element={<SignupForm />} />
+            <Route path="/tasks" element={isAuthenticated ? <TaskList /> : <Navigate to="/login" />} />
+          </Routes>
+        </main>
+        <footer className="app__footer">
+          {/* Footer content */}
+          <p>&copy; 2023 My Todo Task Manager</p>
+        </footer>
+      </div>
+    </Router>
+  );
+};
+
+const HomePage = () => {
+  return (
+    <div className="home-page">
+      <h1>Welcome to My Todo Task Manager</h1>
+      <p>
+        This is a powerful task management web app designed to help you stay organized and boost your productivity. With our app, you can easily create and manage your tasks, set deadlines, and track your progress.
+      </p>
+      <h2>Why Choose Our App?</h2>
+      <ul className="why-choose-list">
+        <li>Effortlessly organize your tasks and stay on top of your to-do list.</li>
+        <li>Set reminders and due dates to ensure timely completion of tasks.</li>
+        <li>Prioritize your tasks and focus on what's most important.</li>
+        <li>Collaborate with others by sharing tasks and assigning responsibilities.</li>
+        <li>Track your progress and celebrate your achievements.</li>
+      </ul>
+      <p>
+        Ready to get started? Sign up now and experience the power of efficient task management.
+      </p>
+      <div className="home-page__signup">
+        <div className="centered-container">
+          <SignupForm />
+        </div>
+        <p>Already have an account? <Link to="/login">Login here</Link>.</p>
+      </div>
+    </div>
+  );
+};
+
 const NavigationBar = () => {
+  const handleHomeClick = () => {
+    // Navigate to the home page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <nav className="navigation-bar">
       <ul className="navigation-bar__list">
         <li className="navigation-bar__item">
-          <Link to="/">Home</Link>
+          <Link to="/" onClick={handleHomeClick}>Home</Link>
         </li>
         <li className="navigation-bar__item">
           <Link to="/login">Login</Link>
@@ -19,75 +79,8 @@ const NavigationBar = () => {
         <li className="navigation-bar__item">
           <Link to="/signup">Signup</Link>
         </li>
-        <li className="navigation-bar__item">
-          <Link to="/google-login">Google Login</Link>
-        </li>
       </ul>
     </nav>
-  );
-};
-
-const MainContent = () => {
-  return (
-    <main className="main-content">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/signup" element={<SignupForm />} />
-        <Route path="/login" element={<LoginForm />} />      
-        <Route path="/google-login" element={<GoogleLoginButton />} />
-      </Routes>
-    </main>
-  );
-};
-
-const HomePage = () => {
-  const navigate = useNavigate();
-
-  const handlePrompt = () => {
-    const confirmation = window.confirm('Do you want to use our application?');
-    if (confirmation) {
-      const loggedIn = window.confirm('Do you already have an account?');
-      if (loggedIn) {
-        navigate('/login');
-      } else {
-        navigate('/signup');
-      }
-    }
-  };
-
-  return (
-    <div>
-      <h1 className="main-content__title">Welcome to my ToDo List Portfolio Project</h1>
-      <p className="main-content__description">
-        This is a portfolio project for the <a href="https://nicanorsolutions.tech">ALX Software Engineering Program</a>.
-        It showcases my skills and capabilities as a software engineer. The project aims to create a simple and efficient
-        todo list application where users can manage their tasks, mark them as completed, and organize their daily workflow.
-        The project is built using React.js for the frontend and utilizes various technologies and libraries such as Redux for state management, React Router for routing, and Firebase for backend services. Feel free to explore the features and functionality of the application by signing up or logging in using the provided forms or the Google login option.
-      </p>
-      <TaskList /> {/* Render the ToDo list component here */}
-      <button onClick={handlePrompt}>Use Application</button>
-    </div>
-  );
-};
-
-const App = () => {
-  return (
-    <Router>
-      <div className="app">
-        <header className="app__header">
-          <div className="app__logo">
-            <img src="/images/logo.svg" alt="Logo" />
-          </div>
-          <NavigationBar />
-        </header>
-        <MainContent />
-        <footer className="app__footer">
-          <p className="app__footer-text">
-            &copy; 2023 <a href="https://github.com/NICANORKYAMBA">ALX Software Engineering Program</a>
-          </p>
-        </footer>
-      </div>
-    </Router>
   );
 };
 

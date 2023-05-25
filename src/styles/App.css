@@ -1,88 +1,140 @@
-/* App.css */
+/* Global styles */
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
+  font-family: 'Poppins', Arial, sans-serif;
+  font-size: 16px;
+  color: #333;
+  background: rgba(212, 238, 238, 0);
+  /*background-image: url('background-image.jpg');
+  background-size: cover;*/
 }
 
-.app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
+/* Header */
 .app__header {
-    background-color: #222;
-    color: #fff;
-    padding: 20px;
-    display: flex;
-    align-items: center;
+  background-color: #2c3e50;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
 }
 
-.app__logo {
-    flex: 1;
-}
-
-.app__logo img {
-    max-width: 100px;
-    height: auto;
+.navigation-bar {
+  display: flex;
+  align-items: center;
 }
 
 .navigation-bar__list {
-    display: flex;
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  display: flex;
 }
 
 .navigation-bar__item {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
-.navigation-bar__link {
-    color: #fff;
-    text-decoration: none;
-    padding: 5px;
+.navigation-bar__item a {
+  text-decoration: none;
+  color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-color: silver;
-    padding: 20px;
-    text-align: center;
+.navigation-bar__item a:hover {
+  background-color: #1a252f;
 }
 
-.main-content__title {
-    font-size: 32px;
-    margin-bottom: 20px;
+/* Main */
+.app__main {
+  padding: 100px 20px;
+  text-align: center;
 }
 
-.main-content__description {
-    font-size: 18px;
-    margin-bottom: 40px;
+.home-page {
+  margin-top: 600px;
 }
 
+.home-page h1 {
+  font-size: 48px;
+  margin-bottom: 20px;
+  color: #000208;
+}
+
+.home-page p {
+  font-size: 18px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  color: #1d0202;
+}
+
+.home-page h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #050e2e;
+}
+
+.home-page ul {
+  list-style: none !important;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #331010;
+  padding-left: 0;
+}
+
+.home-page ul li {
+  margin-bottom: 10px;
+  color: #0c4232;
+  text-align: center;
+}
+
+.home-page ul li::before {
+  content: "•";
+  margin-right: 5px;
+}
+
+.centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Footer */
 .app__footer {
-    background-color: #222;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
+  background-color: #2c3e50;
+  padding: 20px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-.app__footer-text {
-    margin: 0;
-}
-
-.app__footer-text a {
-    color: #fff;
-    text-decoration: none;
-}
-
-.app__footer-text a:hover {
-    text-decoration: underline;
+.app__footer p {
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
 }
