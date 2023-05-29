@@ -1,45 +1,41 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { updateTask, deleteTask } from "../../actions/taskActions";
+import { deleteTask, updateTask } from "../../actions/taskActions";
 
-const TaskItem = ({ task }) => {
+const TaskItem = ({ task, onDeleteTask, onUpdateTask }) => {
     const dispatch = useDispatch();
-    
-    // Handle checkbox click
-    const handleCheckboxClick = () => {
-        const updatedTask = {
-        ...task,
-        completed: !task.completed,
-        };
-    
-        // Dispatch update task action
-        dispatch(updateTask(updatedTask));
+
+    const handleDeleteTask = (taskId) => {
+        dispatch(deleteTask(taskId));
     };
-    
-    // Handle delete button click
-    const handleDeleteClick = () => {
-        // Dispatch delete task action
-        dispatch(deleteTask(task.id));
+
+    const handleUpdateTask = () => {
+        const updatedTask = { ...task, completed: !task.completed };
+        dispatch(updateTask(task.id, updatedTask));
     };
-    
+
     return (
         <div className="task-item">
-        <div className="task-item__checkbox-container">
-            <input
-            className="task-item__checkbox"
-            type="checkbox"
-            checked={task.completed}
-            onChange={handleCheckboxClick}
-            />
-            <span className="task-item__checkbox-custom"></span>
-        </div>
-        <p className="task-item__text">{task.title}</p>
-        <button
-            className="task-item__delete-button"
-            onClick={handleDeleteClick}
-        ></button>
+            <div className="task-item__content">
+                <h3 className="task-item__title">{task.title}</h3>
+                <p className="task-item__description">{task.description}</p>
+                <p className="task-item__due-date">Due: {task.dueDate}</p>
+                <p className="task-item__importance">Importance: {task.importance}</p>
+            </div>
+            <div className="task-item__actions">
+                <button
+                    className="btn btn--primary"
+                    onClick={() => handleUpdateTask(task.id)}>
+                    {task.completed ? 'Mark Incomplete' : 'Mark Complete'}
+                </button>
+                <button
+                    className="btn btn--danger"
+                    onClick={() => handleDeleteTask(task.id)}>
+                    Delete
+                </button>
+            </div>
         </div>
     );
-};
+}
 
 export default TaskItem;

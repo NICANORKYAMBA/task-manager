@@ -1,29 +1,44 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchTasks } from '../../actions/taskActions';
-import '../../styles/TaskList.css'; 
-import TaskItem from './TaskItem';
+import React from 'react';
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTasks, deleteTask, updateTask } from "../../actions/taskActions";
+import TaskItem from "./TaskItem";
+//import TaskForm from "./TaskForm";
+import { Link } from "react-router-dom";
 
 const TaskList = () => {
-  const dispatch = useDispatch();
-  const tasks = useSelector((state) => state.tasks);
+    const dispatch = useDispatch();
+    const tasks = useSelector((state) => state.tasks);
 
-  if (!Array.isArray(tasks)) {
-    return <div>No Tasks Available</div>
-  }
+    useEffect(() => {
+        dispatch(fetchTasks());
+    }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(fetchTasks());
-  }, [dispatch]);
+    const handleDeleteTask = (taskId) => {
+        dispatch(deleteTask(taskId));
+    };
 
-  return (
-    <div className="task-list">
-      <h2 className="task-list__title">Tasks</h2>
-      {tasks.map((task) => (
-        <TaskItem key={task.id} task={task} />
-      ))}
-    </div>
-  );
-};
+    const handleUpdateTask = (taskId, updatedTask) => {
+        dispatch(updateTask(taskId, updatedTask));
+    };
+
+    return (
+        <div className="task-list">
+            <h2 className="task-list__title">My Tasks</h2>
+            <div className="task-list__actions">
+                <Link to="/tasks/create" className="btn btn--primary">Create Task</Link>
+            </div>
+            <div className="task-list__content">
+                {tasks.map((task) => (
+                    <TaskItem
+                        key={task.id}
+                        task={task}
+                        onDeleteTask={handleDeleteTask}
+                        onUpdateTask={handleUpdateTask} />
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default TaskList;

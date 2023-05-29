@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:5000/api';
 
 const axiosInstance = axios.create({
     baseURL: API_URL,
@@ -11,7 +11,7 @@ const axiosInstance = axios.create({
 
 // Set the authorization header for authenticted requests
 axiosInstance.interceptors.request.use(
-    config => {
+    (config) => {
         const token = localStorage.getItem('token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
@@ -25,7 +25,7 @@ axiosInstance.interceptors.request.use(
 
 // Handle 401 Unauthorized responses
 axiosInstance.interceptors.response.use(
-    response => {
+    (response) => {
         return response;
     },
     error => {
@@ -37,7 +37,47 @@ axiosInstance.interceptors.response.use(
 
             return Promise.reject(error);
         }
+
+        // Return any error which is not due to authentication
+        const errorMessage = error.response.data.message || 'Something went wrong';
+        return Promise.reject(new Error(errorMessage));
     }
 );
+
+// Export the endpoints for use in the actions
+// Login the user
+export const loginUser = (email, password) => {
+    return axiosInstance.post('/auth/login', { email, password });
+};
+
+// Register the user
+export const signupUser = (username, email, password) => {
+    return axiosInstance.post('/auth/signup', { username, email, password });
+};
+
+// Logout the user
+export const logoutUser = () => {
+    return axiosInstance.post('/auth/logout');
+};
+
+// Register the user with Google
+export const signupWithGoogle = () => {
+    return axiosInstance.get('/auth/google/signup');
+};
+
+// Google signup callback
+export const signupWithGoogleCallback = (code) => {
+    return axiosInstance.get(`/auth/google/signup/callback?code=${code}`);
+};
+
+// Login the user with Google
+export const loginWithGoogle = () => {
+    return axiosInstance.get('/auth/google/login');
+};
+
+// Google login callback
+export const loginWithGoogleCallback = (code) => {
+    return axiosInstance.get(`/auth/google/login/callback?code=${code}`);
+};
 
 export const api = axiosInstance;
