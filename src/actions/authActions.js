@@ -1,4 +1,13 @@
-import { api } from '../services/api';
+import {
+  loginUser,
+  signupUser,
+  logoutUser,
+  signupUserWithGoogle,
+  signupUserWithGoogleCallback,
+  loginUserWithGoogle,
+  loginUserWithGoogleCallback,
+  checkAuthentication
+} from '../services/api';
 
 // Action types
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
@@ -61,7 +70,7 @@ export const login = (credentials) => {
   return async (dispatch) => {
     try {
       dispatch(loginRequest());
-      const response = await api.loginUser(credentials.email, credentials.password);
+      const response = await loginUser(credentials.email, credentials.password);
       const user = response.data;
       dispatch(loginSuccess(user));
     } catch (error) {
@@ -85,7 +94,7 @@ export const signup = (credentials) => {
       dispatch(signupRequest());
 
       // Send a POST request to /api/signup
-      const response = await api.signupUser(
+      const response = await signupUser(
         credentials.username,
         credentials.email,
         credentials.password
@@ -122,7 +131,7 @@ export const signupWithGoogle = () => {
       dispatch(signupRequest());
 
       // Send a POST request to /api/signup/google
-      const response = await api.signupWithGoogle();
+      const response = await signupUserWithGoogle();
 
       // Extract the user from the response
       const user = response.data;
@@ -136,20 +145,17 @@ export const signupWithGoogle = () => {
       if (error.response && error.response.status === 409) {
         // If the error status is 409, it means the user already exists
         errorMessage = 'User already exists';
-        window.location.href = loginWithGoogle;
-
-      // Check if error.response exists and has data and error properties
       } else if (
         error.response &&
         error.response.data &&
         error.response.data.error
       ) {
+        // Check if error.response exists and has data and error properties
         errorMessage = error.response.data.error;
-        // Dispatch SIGNUP_FAILURE action with the error message
-        dispatch(signupFailure(errorMessage));
-      } else {
-        dispatch(signupFailure('An error occurred'));
       }
+
+      // Dispatch SIGNUP_FAILURE action with the error message
+      dispatch(signupFailure(errorMessage));
     }
   };
 };
@@ -159,7 +165,7 @@ export const signupWithGoogleCallback = (code) => {
     try {
       // Dispatch SIGNUP_REQUEST action
       dispatch(signupRequest());
-      const response = await api.signupWithGoogleCallback(code);
+      const response = await signupUserWithGoogleCallback(code);
       const user = response.data;
       dispatch(signupSuccess(user));
     } catch (error) {
@@ -179,7 +185,7 @@ export const loginWithGoogle = () => {
   return async (dispatch) => {
     try {
       dispatch(loginRequest());
-      const response = await api.loginWithGoogle();
+      const response = await loginUserWithGoogle();
       const user = response.data;
       dispatch(loginSuccess(user));
     } catch (error) {
@@ -196,7 +202,7 @@ export const loginWithGoogleCallback = (code) => {
   return async (dispatch) => {
     try {
       dispatch(loginRequest());
-      const response = await api.loginWithGoogleCallback(code);
+      const response = await loginUserWithGoogleCallback(code);
       const user = response.data;
       dispatch(loginSuccess(user));
     } catch (error) {
@@ -209,10 +215,22 @@ export const loginWithGoogleCallback = (code) => {
   };
 };
 
-export const logoutUser = () => {
+export const checkAuth = () => {
   return async (dispatch) => {
     try {
-      await api.logoutUser();
+      const response = await checkAuthentication();
+      const user = response.data;
+      dispatch(loginSuccess(user));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
+export const logOut = () => {
+  return async (dispatch) => {
+    try {
+      await logoutUser();
       dispatch(logout());
     } catch (error) {
       console.log(error);

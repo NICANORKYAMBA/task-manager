@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTasks, deleteTask, updateTask } from "../../actions/taskActions";
+import { getAllTasks, taskDeletion, taskUpdate } from "../../actions/taskActions";
 import TaskItem from "./TaskItem";
 //import TaskForm from "./TaskForm";
 import { Link } from "react-router-dom";
@@ -11,15 +11,15 @@ const TaskList = () => {
     const tasks = useSelector((state) => state.tasks);
 
     useEffect(() => {
-        dispatch(fetchTasks());
+        dispatch(getAllTasks());
     }, [dispatch]);
 
     const handleDeleteTask = (taskId) => {
-        dispatch(deleteTask(taskId));
+        dispatch(taskDeletion(taskId));
     };
 
     const handleUpdateTask = (taskId, updatedTask) => {
-        dispatch(updateTask(taskId, updatedTask));
+        dispatch(taskUpdate(taskId, updatedTask));
     };
 
     return (

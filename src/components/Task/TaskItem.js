@@ -1,17 +1,17 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { deleteTask, updateTask } from "../../actions/taskActions";
+import { taskDeletion, taskUpdate } from "../../actions/taskActions";
 
 const TaskItem = ({ task, onDeleteTask, onUpdateTask }) => {
     const dispatch = useDispatch();
 
     const handleDeleteTask = (taskId) => {
-        dispatch(deleteTask(taskId));
+        dispatch(taskDeletion(taskId));
     };
 
     const handleUpdateTask = () => {
         const updatedTask = { ...task, completed: !task.completed };
-        dispatch(updateTask(task.id, updatedTask));
+        dispatch(taskUpdate(task.id, updatedTask));
     };
 
     return (

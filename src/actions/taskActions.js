@@ -1,4 +1,10 @@
-import { api } from '../services/api';
+import {
+    fetchTask,
+    fetchTasks,
+    addTask,
+    deleteTask,
+    updateTask
+} from "../services/api";
 
 // Action types
 export const FETCH_TASKS_REQUEST = 'FETCH_TASKS_REQUEST';
@@ -119,11 +125,12 @@ export const updateTaskFailure = (error) => {
 };
 
 // Thunk actions
-export const fetchTasks = () => {
+export const getAllTasks = () => {
     return async dispatch => {
         try {
+            dispatch(fetchTasksRequest());
             // Send a GET request to /api/tasks
-            const response = await api.get('/api/tasks');
+            const response = await fetchTasks();
             const tasks = response.data;
 
             // Dispatch FETCH_TASKS_SUCCESS action
@@ -135,11 +142,12 @@ export const fetchTasks = () => {
     };
 };
 
-export const fetchTask = (id) => {
+export const getTask = (id) => {
     return async dispatch => {
         try {
+            dispatch(fetchTaskRequest());
             // Send a GET request to /api/tasks/:id
-            const response = await api.get(`/api/tasks/${id}`);
+            const response = await fetchTask(id);
             const task = response.data;
 
             // Dispatch FETCH_TASK_SUCCESS action
@@ -151,11 +159,12 @@ export const fetchTask = (id) => {
     };
 };
 
-export const addTask = (task) => {
+export const addNewTask = (task) => {
     return async dispatch => {
         try {
+            dispatch(addTaskRequest());
             // Send a POST request to /api/tasks
-            const response = await api.post('/api/tasks', task);
+            const response = await addTask(task);
             const newTask = response.data;
 
             // Dispatch ADD_TASK_SUCCESS action
@@ -167,11 +176,12 @@ export const addTask = (task) => {
     };
 };
 
-export const deleteTask = (id) => {
+export const taskDeletion = (id) => {
     return async dispatch => {
         try {
+            dispatch(deleteTaskRequest());
             // Send a DELETE request to /api/tasks/:id
-            await api.delete(`/api/tasks/${id}`);
+            await deleteTask(id);
 
             // Dispatch DELETE_TASK_SUCCESS action
             dispatch(deleteTaskSuccess(id));
@@ -182,11 +192,12 @@ export const deleteTask = (id) => {
     };
 };
 
-export const updateTask = (id, task) => {
+export const taskUpdate = (id, task) => {
     return async dispatch => {
         try {
+            dispatch(updateTaskRequest());
             // Send a PATCH request to /api/tasks/:id
-            const response = await api.patch(`/api/tasks/${id}`, task);
+            const response = await updateTask(id, task);
             const updatedTask = response.data;
 
             // Dispatch UPDATE_TASK_SUCCESS action

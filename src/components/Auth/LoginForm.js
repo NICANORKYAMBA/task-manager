@@ -4,26 +4,42 @@ import { login, loginWithGoogle } from '../../actions/authActions';
 import '../../styles/LoginForm.css';
 
 // LoginForm component
-const LoginForm = () => {
+const LoginForm = ( { setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
-  // Handle form submit
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Dispatch login action
-    dispatch(login({ email, password }));
+    try {
+      // Call the login action
+      await dispatch(login(email, password));
 
-    // Clear form fields
-    setEmail('');
-    setPassword('');
+      // Update the authentication state
+      setIsAuthenticated(true);
+
+      // Redirect to the home page
+      window.location.href = '/tasks';
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   // Handle Google login
   const handleGoogleLogin = () => {
-    dispatch(loginWithGoogle());
+    try {
+      // Call the login action
+      dispatch(loginWithGoogle());
+
+      // Update the authentication state
+      setIsAuthenticated(true);
+
+      // Redirect to the home page
+      window.location.href = '/tasks';
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   return (
