@@ -1,45 +1,59 @@
+import { GOOGLE_CLIENT_ID } from '../../config/config';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { login, loginWithGoogle } from '../../actions/authActions';
+import { GoogleLogin } from '@leecheuk/react-google-login';
+import { loginUser, loginUserWithGoogle } from '../../actions/authActions';
+import { useNavigate } from 'react-router-dom';
 import '../../styles/LoginForm.css';
 
-// LoginForm component
-const LoginForm = ( { setIsAuthenticated }) => {
+const LoginForm = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const dispatch = useDispatch();
+  const history = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
+      if (!email || !password) {
+        setError('Please enter both email and password.');
+        return;
+      }
+
       // Call the login action
-      await dispatch(login(email, password));
+      await dispatch(loginUser(email, password));
 
       // Update the authentication state
       setIsAuthenticated(true);
 
       // Redirect to the home page
-      window.location.href = '/tasks';
+      history.push('/tasks');
     } catch (error) {
       console.error('Login failed:', error);
+      setError('An error occurred during login. Please try again.');
     }
   };
 
-  // Handle Google login
-  const handleGoogleLogin = () => {
-    try {
-      // Call the login action
-      dispatch(loginWithGoogle());
-
-      // Update the authentication state
-      setIsAuthenticated(true);
-
-      // Redirect to the home page
-      window.location.href = '/tasks';
-    } catch (error) {
-      console.error('Login failed:', error);
+  const handleGoogleLoginSuccess = (response) => {
+    if (response.tokenId) {
+      const idToken = response.tokenId;
+      dispatch(loginUserWithGoogle(idToken))
+        .then(() => {
+          setIsAuthenticated(true);
+          history.push('/tasks');
+        })
+        .catch((error) => {
+          console.error('Google login failed:', error);
+          setError('An error occurred during Google login. Please try again.');
+        });
     }
+  };
+
+  const handleGoogleLoginFailure = (error) => {
+    console.error('Google login failure:', error);
+    setError('An error occurred during Google login. Please try again.');
   };
 
   return (
@@ -68,13 +82,20 @@ const LoginForm = ( { setIsAuthenticated }) => {
             onChange={(event) => setPassword(event.target.value)}
           />
         </div>
+        {error && <div className="error-message">{error}</div>}
         <button className="login-form__button" type="submit">
           Login
         </button>
         <div className="login-form__google">
           <p>Or login with your Google account</p>
-          <button className="google-login-button" onClick={handleGoogleLogin}>
-          </button>
+          <GoogleLogin
+            clientId={GOOGLE_CLIENT_ID}
+            buttonText="Login with Google"
+            onSuccess={handleGoogleLoginSuccess}
+            onFailure={handleGoogleLoginFailure}
+            cookiePolicy="single_host_origin"
+            className="google-login-button"
+          />
         </div>
       </div>
     </form>

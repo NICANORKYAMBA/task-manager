@@ -1,216 +1,161 @@
+import { GoogleLogin } from '@leecheuk/react-google-login';
+import { GOOGLE_CLIENT_ID } from '../config/config';
 import {
-  loginUser,
-  signupUser,
-  logoutUser,
-  signupUserWithGoogle,
-  signupUserWithGoogleCallback,
-  loginUserWithGoogle,
-  loginUserWithGoogleCallback,
-  checkAuthentication
+  login,
+  signup,
+//  signupWithGoogle,
+  signupWithGoogleCallback,
+  //loginWithGoogle,
+  loginWithGoogleCallback,
+  checkAuthentication,
+  logout
 } from '../services/api';
 
 // Action types
-export const LOGIN_REQUEST = 'LOGIN_REQUEST';
-export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
-export const LOGIN_FAILURE = 'LOGIN_FAILURE';
-export const SIGNUP_REQUEST = 'SIGNUP_REQUEST';
-export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS';
-export const SIGNUP_FAILURE = 'SIGNUP_FAILURE';
+export const AUTH_REQUEST = 'AUTH_REQUEST';
+export const AUTH_SUCCESS = 'AUTH_SUCCESS';
+export const AUTH_FAILURE = 'AUTH_FAILURE';
 export const LOGOUT = 'LOGOUT';
 
 // Action creators
-export const loginRequest = () => {
-    return {
-        type: LOGIN_REQUEST
-    };
+export const authRequest = () => {
+  return {
+    type: AUTH_REQUEST
+  };
 };
 
-export const loginSuccess = (user) => {
-    return {
-        type: LOGIN_SUCCESS,
-        payload: user
-    };
+export const authSuccess = (user) => {
+  return {
+    type: AUTH_SUCCESS,
+    payload: user
+  };
 };
 
-export const loginFailure = (error) => {
-    return {
-        type: LOGIN_FAILURE,
-        payload: error
-    };
+export const authFailure = (error) => {
+  return {
+    type: AUTH_FAILURE,
+    payload: error
+  };
 };
 
-export const signupRequest = () => {
-    return {
-        type: SIGNUP_REQUEST
-    };
+export const logOut = () => {
+  return {
+    type: LOGOUT
+  };
 };
 
-export const signupSuccess = (user) => {
-    return {
-        type: SIGNUP_SUCCESS,
-        payload: user
-    };
-};
+// Common error handling function
+const handleErrors = (error, dispatch, failureAction) => {
+  let errorMessage = 'Something went wrong';
 
-export const signupFailure = (error) => {
-    return {
-        type: SIGNUP_FAILURE,
-        payload: error
-    };
-};
+  if (error.response) {
+    if (error.response.status === 409) {
+      errorMessage = 'User already exists';
+    } else if (error.response.data && error.response.data.error) {
+      errorMessage = error.response.data.error;
+    }
+  }
 
-export const logout = () => {
-    return {
-        type: LOGOUT
-    };
+  dispatch(failureAction(errorMessage));
 };
 
 // Thunk actions
-export const login = (credentials) => {
+export const loginUser = (credentials) => {
   return async (dispatch) => {
     try {
-      dispatch(loginRequest());
-      const response = await loginUser(credentials.email, credentials.password);
+      dispatch(authRequest());
+      const response = await login(credentials.email, credentials.password);
       const user = response.data;
-      dispatch(loginSuccess(user));
+      dispatch(authSuccess(user));
     } catch (error) {
-      if (error.response && error.response.data) {
-        // Handle specific error scenarios
-        const errorData = error.response.data;
-        const errorMessage = errorData.error || 'An error occurred';
-        dispatch(loginFailure(errorMessage));
-      } else {
-        // Handle generic error
-        dispatch(loginFailure('An error occurred'));
-      }
+      handleErrors(error, dispatch, authFailure);
     }
   };
 };
 
-export const signup = (credentials) => {
+export const signupUser = (credentials) => {
   return async (dispatch) => {
     try {
-      // Dispatch SIGNUP_REQUEST action
-      dispatch(signupRequest());
-
-      // Send a POST request to /api/signup
-      const response = await signupUser(
+      dispatch(authRequest());
+      const response = await signup(
         credentials.username,
         credentials.email,
         credentials.password
       );
+      const user = response.data;
+      dispatch(authSuccess(user));
+    } catch (error) {
+      handleErrors(error, dispatch, authFailure);
+    }
+  };
+};
+
+export const signupUserWithGoogle = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(authRequest());
+
+      // Call Google's API signin method
+      const { code } = await GoogleLogin.signIn(GOOGLE_CLIENT_ID);
+
+      // Send a GET request to /auth/google/signup/callback with the authorization code
+      const response = await signupWithGoogleCallback(code);
 
       // Extract the user from the response
       const user = response.data;
 
-      // Dispatch SIGNUP_SUCCESS action with the user
-      dispatch(signupSuccess(user));
+      // Dispatch AUTH_SUCCESS action with the user
+      dispatch(authSuccess(user));
     } catch (error) {
-      // Default error message
-      let errorMessage = 'Something went wrong';
-
-      // Check if error.response exists and has data and error properties
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error
-      ) {
-        errorMessage = error.response.data.error;
-      }
-
-      // Dispatch SIGNUP_FAILURE action with the error message
-      dispatch(signupFailure(errorMessage));
+      handleErrors(error, dispatch, authFailure);
     }
   };
 };
 
-export const signupWithGoogle = () => {
+export const signupUserWithGoogleCallback = (code) => {
   return async (dispatch) => {
     try {
-      // Dispatch SIGNUP_REQUEST action
-      dispatch(signupRequest());
+      dispatch(authRequest());
+      const response = await signupWithGoogleCallback(code);
+      const user = response.data;
+      dispatch(authSuccess(user));
+    } catch (error) {
+      handleErrors(error, dispatch, authFailure);
+    }
+  };
+};
 
-      // Send a POST request to /api/signup/google
-      const response = await signupUserWithGoogle();
+export const loginUserWithGoogle = () => {
+  return async (dispatch) => {
+    try {
+      dispatch(authRequest());
+
+      // Call Google's API signin method
+      const { code } = await GoogleLogin.signIn(GOOGLE_CLIENT_ID);
+
+      // Send a GET request to /auth/google/login/callback with the authorization code
+      const response = await loginWithGoogleCallback(code);
 
       // Extract the user from the response
       const user = response.data;
 
-      // Dispatch SIGNUP_SUCCESS action with the user
-      dispatch(signupSuccess(user));
+      // Dispatch AUTH_SUCCESS action with the user
+      dispatch(authSuccess(user));
     } catch (error) {
-      // Default error message
-      let errorMessage = 'Something went wrong';
-
-      if (error.response && error.response.status === 409) {
-        // If the error status is 409, it means the user already exists
-        errorMessage = 'User already exists';
-      } else if (
-        error.response &&
-        error.response.data &&
-        error.response.data.error
-      ) {
-        // Check if error.response exists and has data and error properties
-        errorMessage = error.response.data.error;
-      }
-
-      // Dispatch SIGNUP_FAILURE action with the error message
-      dispatch(signupFailure(errorMessage));
+      handleErrors(error, dispatch, authFailure);
     }
   };
 };
 
-export const signupWithGoogleCallback = (code) => {
+export const loginUserWithGoogleCallback = (code) => {
   return async (dispatch) => {
     try {
-      // Dispatch SIGNUP_REQUEST action
-      dispatch(signupRequest());
-      const response = await signupUserWithGoogleCallback(code);
+      dispatch(authRequest());
+      const response = await loginWithGoogleCallback(code);
       const user = response.data;
-      dispatch(signupSuccess(user));
+      dispatch(authSuccess(user));
     } catch (error) {
-      // Default error message
-      let errorMessage = 'Something went wrong';
-      if (error.response && error.response.data && error.response.data.error) {
-        dispatch(signupFailure(error.response.data.error));
-      } else {
-        dispatch(signupFailure(errorMessage));
-      }
-    }
-  };
-};
-
-
-export const loginWithGoogle = () => {
-  return async (dispatch) => {
-    try {
-      dispatch(loginRequest());
-      const response = await loginUserWithGoogle();
-      const user = response.data;
-      dispatch(loginSuccess(user));
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        dispatch(loginFailure(error.response.data.error));
-      } else {
-        dispatch(loginFailure('An error occurred'));
-      }
-    }
-  };
-}
-
-export const loginWithGoogleCallback = (code) => {
-  return async (dispatch) => {
-    try {
-      dispatch(loginRequest());
-      const response = await loginUserWithGoogleCallback(code);
-      const user = response.data;
-      dispatch(loginSuccess(user));
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        dispatch(loginFailure(error.response.data.error));
-      } else {
-        dispatch(loginFailure('An error occurred'));
-      }
+      handleErrors(error, dispatch, authFailure);
     }
   };
 };
@@ -220,18 +165,18 @@ export const checkAuth = () => {
     try {
       const response = await checkAuthentication();
       const user = response.data;
-      dispatch(loginSuccess(user));
+      dispatch(authSuccess(user));
     } catch (error) {
       console.log(error);
     }
   };
 };
 
-export const logOut = () => {
+export const logOutUser = () => {
   return async (dispatch) => {
     try {
-      await logoutUser();
-      dispatch(logout());
+      await logout();
+      dispatch(logOut());
     } catch (error) {
       console.log(error);
     }

@@ -1,51 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOutUser, checkAuth } from '../actions/authActions';
+import '../styles/App.css';
 import LoginForm from './Auth/LoginForm';
 import SignupForm from './Auth/SignupForm';
-import { logout, checkAuth } from '../actions/authActions';
-import '../styles/App.css';
 import TaskList from './Task/TaskList';
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   // Check if the user is authenticated
   useEffect(() => {
     const checkAuthenticationStatus = async () => {
       try {
         // Call API to check if the user is authenticated
-        const response = await checkAuth();
+        const response = await dispatch(checkAuth());
 
         // Update the state
-        setIsAuthenticated(response.data.isAuthenticated);
+        if (response.status === 200) {
+          dispatch(response.data);
+        }
       } catch (error) {
-        console.error('Authentication check failed:', error);
-      } finally {
-        // Update the loading state
-        setIsLoading(false);
+        console.error('Authentication attempt failed:', error);
       }
     };
 
     checkAuthenticationStatus();
-  }, []);
+  }, [dispatch]);
 
   // Handle user logout
   const handleLogout = async () => {
     try {
       // Call API to logout the user
-      await logout();
+      const response = await dispatch(logOutUser());
 
       // Update the state
-      setIsAuthenticated(false);
+      if (response.status === 200) {
+        dispatch(response.data);
+      }
     } catch (error) {
       console.error('Logout attempt failed:', error);
     }
   };
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <Router>
@@ -59,11 +57,11 @@ const App = () => {
             <Route path="/" element={<HomePage />} />
             <Route
               path="/auth/login"
-              element={<LoginForm setIsAuthenticated={setIsAuthenticated} />}
+              element={<LoginForm />}
             />
             <Route
               path="/auth/signup"
-              element={<SignupForm setIsAuthenticated={setIsAuthenticated} />}
+              element={<SignupForm />}
             />
             <Route
               path="/tasks"
