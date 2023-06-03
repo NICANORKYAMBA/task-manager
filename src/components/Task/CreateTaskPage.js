@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addNewTask } from '../../actions/taskActions';
+import '../../styles/CreateTaskPage.css';
+import { useNavigate } from 'react-router-dom';
 
 const CreateTaskPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -28,13 +31,19 @@ const CreateTaskPage = () => {
     setDescription('');
     setDueDate('');
     setImportance('');
+
+    navigate('/tasks');
+  };
+
+  const handleCancel = () => {
+    navigate('/tasks');
   };
 
   return (
-    <div>
+    <div className="create-task-page">
       <h3>Create a New Task</h3>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="form-group">
           <label htmlFor="task-title">Title</label>
           <input
             type="text"
@@ -45,7 +54,7 @@ const CreateTaskPage = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="task-description">Description</label>
           <textarea
             id="task-description"
@@ -55,7 +64,7 @@ const CreateTaskPage = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="task-due-date">Due Date</label>
           <input
             type="date"
@@ -65,7 +74,7 @@ const CreateTaskPage = () => {
             required
           />
         </div>
-        <div>
+        <div className="form-group">
           <label htmlFor="task-importance">Importance</label>
           <select
             id="task-importance"
@@ -74,12 +83,19 @@ const CreateTaskPage = () => {
             required
           >
             <option value="">Select importance</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="low">Less Important</option>
+            <option value="medium">Important</option>
+            <option value="high">Very Important</option>
           </select>
         </div>
-        <button type="submit">Create Task</button>
+        <div className="form-group">
+          <button type="submit" className="create-task-button">
+            Create Task
+          </button>
+          <button type="button" className="cancel-button" onClick={handleCancel}>
+            X
+          </button>
+        </div>
       </form>
     </div>
   );

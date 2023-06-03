@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import TaskListPage from './TaskListPage';
 import CreateTaskPage from './CreateTaskPage';
+import '../../styles/TaskManagementPage.css';
+
 
 const TaskManagementPage = () => {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -14,14 +16,20 @@ const TaskManagementPage = () => {
   };
 
   return (
-    <div>
+  
+    <div className="container task-management-page">
       {showCreateForm ? (
         <CreateTaskPage onClose={handleCreateTaskClose} />
       ) : (
         <TaskListPage />
       )}
       {!showCreateForm && (
-        <button onClick={handleCreateButtonClick}>Create New Task</button>
+        <button
+          className="create-task-button"
+          onClick={handleCreateButtonClick}
+        >
+          Create New Task
+        </button>
       )}
     </div>
   );
