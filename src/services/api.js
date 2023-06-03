@@ -1,16 +1,17 @@
+import axios from 'axios';
 import { api } from './apiConfig';
 
 // Authentication endpoints
 export const login = (email, password) => {
-  return api.post('/login', { email, password });
+  return axios.post('/auth/login', { email, password });
 };
 
-export const signup = (username, email, password) => {
-  return api.post('/signup', { username, email, password });
+export const signup = (email, password) => {
+  return axios.post('/auth/signup', { email, password });
 };
 
 export const logout = () => {
-  return api.post('/logout');
+  return api.post('/auth/logout');
 };
 
 export const signupWithGoogle = () => {
@@ -61,10 +62,6 @@ export const fetchUsers = () => {
 
 export const fetchUser = (id) => {
   return api.get(`/users/${id}`);
-};
-
-export const addUser = (user) => {
-  return api.post('/users', user);
 };
 
 export const deleteUser = (id) => {

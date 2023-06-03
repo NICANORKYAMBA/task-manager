@@ -1,149 +1,21 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logOutUser, checkAuth } from '../actions/authActions';
-import '../styles/App.css';
-import LoginForm from './Auth/LoginForm';
-import SignupForm from './Auth/SignupForm';
-import TaskList from './Task/TaskList';
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import LandingPageContainer from '../LandingPageContainer';
+import LoginForm from '../components/Auth/LoginForm';
+import TaskManagementPage from '../components/Task/TaskManagementPage';
 
-const App = () => {
-  const dispatch = useDispatch();
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
-  // Check if the user is authenticated
-  useEffect(() => {
-    const checkAuthenticationStatus = async () => {
-      try {
-        // Call API to check if the user is authenticated
-        const response = await dispatch(checkAuth());
-
-        // Update the state
-        if (response.status === 200) {
-          dispatch(response.data);
-        }
-      } catch (error) {
-        console.error('Authentication attempt failed:', error);
-      }
-    };
-
-    checkAuthenticationStatus();
-  }, [dispatch]);
-
-  // Handle user logout
-  const handleLogout = async () => {
-    try {
-      // Call API to logout the user
-      const response = await dispatch(logOutUser());
-
-      // Update the state
-      if (response.status === 200) {
-        dispatch(response.data);
-      }
-    } catch (error) {
-      console.error('Logout attempt failed:', error);
-    }
-  };
-
+function App() {
   return (
-    <Router>
-      <div className="app">
-        <header className="app__header">
-          <NavigationBar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
-        </header>
-        <main className="app__main">
-          {/* Main content */}
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route
-              path="/auth/login"
-              element={<LoginForm />}
-            />
-            <Route
-              path="/auth/signup"
-              element={<SignupForm />}
-            />
-            <Route
-              path="/tasks"
-              element={isAuthenticated ? <TaskList /> : <Navigate to="/login" />}
-            />
-          </Routes>
-        </main>
-        <footer className="app__footer">
-          {/* Footer content */}
-          <p>&copy; 2023 My Alx Portfolio Project</p>
-        </footer>
-      </div>
-    </Router>
-  );
-};
-
-const HomePage = () => {
-  return (
-    <div className="home-page">
-      <h1>Welcome to My Todo Task Manager</h1>
-      <p>
-        This is a powerful task management web app designed to help you stay organized and boost your productivity. With our app, you can easily create and manage your tasks, set deadlines, and track your progress.
-      </p>
-      <h2>Why Choose Our App?</h2>
-      <ul className="why-choose-list">
-        <li>Effortlessly organize your tasks and stay on top of your to-do list.</li>
-        <li>Set reminders and due dates to ensure timely completion of tasks.</li>
-        <li>Prioritize your tasks and focus on what's most important.</li>
-        <li>Collaborate with others by sharing tasks and assigning responsibilities.</li>
-        <li>Track your progress and celebrate your achievements.</li>
-      </ul>
-      <p>
-        Ready to get started? Sign up now and experience the power of efficient task management.
-      </p>
-      <div className="home-page__signup">
-        <div className="centered-container">
-          <SignupForm />
-        </div>
-        <p>Already have an account? <Link to="/auth/login">Login here</Link>.</p>
-      </div>
+    <div className="App">
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<LandingPageContainer />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/tasks" element={<TaskManagementPage />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
-};
-
-const NavigationBar = ({ isAuthenticated, onLogout }) => {
-  const handleHomeClick = () => {
-    // Navigate to the home page
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleLogoutClick = async () => {
-    try {
-      // Call the logout function
-      await onLogout();
-    } catch (error) {
-      console.error('Logout attempt failed:', error);
-    }
-  };
-
-  return (
-    <nav className="navigation-bar">
-      <ul className="navigation-bar__list">
-        <li className="navigation-bar__item">
-          <Link to="/" onClick={handleHomeClick}>Home</Link>
-        </li>
-        {isAuthenticated ? (
-          <li className="navigation-bar__item">
-            <button onClick={handleLogoutClick}>Logout</button>
-          </li>
-        ) : (
-          <>
-            <li className="navigation-bar__item">
-              <Link to="/auth/login">Login</Link>
-            </li>
-            <li className="navigation-bar__item">
-              <Link to="/auth/signup">Signup</Link>
-            </li>
-          </>
-        )}
-      </ul>
-    </nav>
-  );
-};
+}
 
 export default App;

@@ -15,7 +15,6 @@ import {
 
 const initialState = {
     tasks: [],
-    task: {},
     loading: false,
     error: ''
 };
@@ -23,6 +22,9 @@ const initialState = {
 const tasksReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_TASKS_REQUEST:
+        case ADD_TASK_REQUEST:
+        case DELETE_TASK_REQUEST:
+        case UPDATE_TASK_REQUEST:
             return {
                 ...state,
                 loading: true
@@ -34,35 +36,12 @@ const tasksReducer = (state = initialState, action) => {
                 tasks: action.payload,
                 error: ''
             };
-        case FETCH_TASKS_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                tasks: [],
-                error: action.payload
-            };
-        case ADD_TASK_REQUEST:
-            return {
-                ...state,
-                loading: true
-            };
         case ADD_TASK_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 tasks: [...state.tasks, action.payload],
                 error: ''
-            };
-        case ADD_TASK_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            };
-        case DELETE_TASK_REQUEST:
-            return {
-                ...state,
-                loading: true
             };
         case DELETE_TASK_SUCCESS:
             return {
@@ -71,17 +50,6 @@ const tasksReducer = (state = initialState, action) => {
                 tasks: state.tasks.filter(task => task.id !== action.payload),
                 error: ''
             };
-        case DELETE_TASK_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            };
-        case UPDATE_TASK_REQUEST:
-            return {
-                ...state,
-                loading: true
-            };
         case UPDATE_TASK_SUCCESS:
             return {
                 ...state,
@@ -89,6 +57,9 @@ const tasksReducer = (state = initialState, action) => {
                 tasks: state.tasks.map(task => task.id === action.payload.id ? action.payload : task),
                 error: ''
             };
+        case FETCH_TASKS_FAILURE:
+        case ADD_TASK_FAILURE:
+        case DELETE_TASK_FAILURE:
         case UPDATE_TASK_FAILURE:
             return {
                 ...state,
