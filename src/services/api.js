@@ -1,46 +1,45 @@
-import axios from 'axios';
 import { api } from './apiConfig';
 
 // Authentication endpoints
 export const login = (email, password) => {
-  return axios.post('/auth/login', { email, password });
+  return api.post('api/auth/login', { email, password });
 };
 
 export const signup = (email, password) => {
-  return axios.post('/auth/signup', { email, password });
+  return api.post('api/auth/signup', { email, password });
 };
 
 export const logout = () => {
-  return api.post('/auth/logout');
+  return api.post('api/auth/logout');
 };
 
 export const signupWithGoogle = () => {
-  return api.get('/auth/google/signup');
+  return api.get('api/auth/google/signup');
 };
 
 export const signupWithGoogleCallback = (code) => {
-  return api.get(`/auth/google/signup/callback?code=${code}`);
+  return api.get(`api/auth/google/signup/callback?code=${code}`);
 };
 
 export const loginWithGoogle = () => {
-  return api.get('/auth/google/login');
+  return api.get('api/auth/google/login');
 };
 
 export const loginWithGoogleCallback = (code) => {
-  return api.get(`/auth/google/login/callback?code=${code}`);
+  return api.get(`api/auth/google/login/callback?code=${code}`);
 };
 
 export const checkAuthentication = () => {
-  return api.get('/auth/check');
+  return api.get('api/auth/check');
 };
 
 // Task endpoints
-export const fetchTasks = () => {
-  return api.get('/tasks');
+export const fetchTasks = (userId) => {
+  return api.get(`/api/tasks/${userId}`);
 };
 
 export const fetchTask = (id) => {
-  return api.get(`/tasks/${id}`);
+  return api.get(`api/tasks/${id}`);
 };
 
 export const addTask = (task) => {

@@ -16,7 +16,7 @@ import {
 const initialState = {
     tasks: [],
     loading: false,
-    error: ''
+    error: null,
 };
 
 const tasksReducer = (state = initialState, action) => {

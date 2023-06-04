@@ -95,10 +95,10 @@ const updateTaskFailure = (error) => ({
 });
 
 // Thunk actions
-export const getAllTasks = () => async (dispatch) => {
+export const getAllTasks = (userId) => async (dispatch) => {
   try {
     dispatch(fetchTasksRequest());
-    const response = await fetchTasks();
+    const response = await fetchTasks(userId);
     const tasks = response.data;
     dispatch(fetchTasksSuccess(tasks));
   } catch (error) {

@@ -66,10 +66,17 @@ export const loginUser = ({ email, password }) => {
       const user = response.data;
       dispatch(authSuccess(user));
     } catch (error) {
-      handleErrors(error, dispatch, authFailure);
+      if (error.response && error.response.status === 401) {
+        // Unauthorized: Incorrect credentials
+        dispatch(authFailure("Invalid email or password"));
+      } else {
+        // Other errors
+        dispatch(authFailure("Failed to login"));
+      }
     }
   };
 };
+
 
 export const signupUser = ({ email, password }) => {
   return async (dispatch) => {
