@@ -1,34 +1,53 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { loginUser } from '../../actions/authActions';
 import '../../styles/LoginForm.css';
 
-const LoginForm = ({ loginUser }) => {
+const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+
+  // Validate the form fields
+  const validationErrors = {};
+  if (!email) {
+    validationErrors.email = 'Email is required';
+  }
+  if (!password) {
+    validationErrors.password = 'Password is required';
+  }
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+  
     setIsLoading(true);
     try {
-      const response = await loginUser({ email, password });
-      if (response && response.success) {
-        navigate('/tasks')
+      const { response, userEmail, successMessage } = await dispatch(loginUser({ email, password }));
+      console.log(response);
+      console.log(userEmail);
+      console.log(successMessage);
+      
+      if (response && response.status === 200) {
+        navigate('/tasks', { state: { userEmail } });
         console.log('Login successful');
       } else {
         console.log('Login failed');
-        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
+    } finally {
       setIsLoading(false);
     }
   };
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,8 +72,10 @@ const LoginForm = ({ loginUser }) => {
         <header>Login</header>
         <form onSubmit={handleSubmit}>
           <div className="field input-field">
+            <label htmlFor="email">Email</label>
             <input
               type="email"
+              id="email"
               placeholder="Email"
               className="input"
               name="email"
@@ -62,11 +83,14 @@ const LoginForm = ({ loginUser }) => {
               onChange={handleChange}
               required
             />
+            {errors.email && <div className="form__error">{errors.email}</div>}
           </div>
 
           <div className="field input-field">
+            <label htmlFor="password">Password</label>
             <input
               type="password"
+              id="password"
               placeholder="Password"
               className="password"
               name="password"
@@ -74,6 +98,7 @@ const LoginForm = ({ loginUser }) => {
               onChange={handleChange}
               required
             />
+            {errors.password && <div className="form__error">{errors.password}</div>}
             <i className="bx bx-hide eye-icon"></i>
           </div>
 
@@ -107,4 +132,4 @@ const LoginForm = ({ loginUser }) => {
   );
 };
 
-export default connect(null, { loginUser })(LoginForm);
+export default LoginForm;

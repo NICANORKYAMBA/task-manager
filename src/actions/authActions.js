@@ -63,8 +63,19 @@ export const loginUser = ({ email, password }) => {
     try {
       dispatch(authRequest());
       const response = await login(email, password);
-      const user = response.data;
-      dispatch(authSuccess(user));
+      const { message, token, userId } = response.data;
+
+      if (response.status === 200) {
+        const emailParts = email.split('@');
+        const userEmail = emailParts[0]; // Extract the part before '@' symbol
+        const successMessage = message.split(',')[1].trim();
+        const user = { email: userEmail, token, userId };
+        dispatch(authSuccess(user));
+        return { response, userEmail, successMessage };
+      } else {
+        dispatch(authFailure("Failed to login"));
+        return { response: null, userEmail: null, successMessage: null };
+      }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         // Unauthorized: Incorrect credentials
@@ -73,10 +84,10 @@ export const loginUser = ({ email, password }) => {
         // Other errors
         dispatch(authFailure("Failed to login"));
       }
+      throw error; // Rethrow the error
     }
   };
 };
-
 
 export const signupUser = ({ email, password }) => {
   return async (dispatch) => {
@@ -85,6 +96,7 @@ export const signupUser = ({ email, password }) => {
       const response = await signup(email, password);
       const user = response.data;
       dispatch(authSuccess(user));
+      return response; // Return the response
     } catch (error) {
       handleErrors(error, dispatch, authFailure);
     }
@@ -134,11 +146,15 @@ export const checkAuth = () => {
 export const logOutUser = () => {
   return async (dispatch) => {
     try {
-      await logout();
+      dispatch(authRequest());
+      await logout(); // Call the logout API
+
+      // Dispatch the LOGOUT action to update the Redux state
       dispatch(logOut());
     } catch (error) {
       console.log(error);
-      // Dispatch an appropriate action or show an error message to the user
+      const errorMessage = 'Failed to logout';
+      dispatch(authFailure(errorMessage));
     }
   };
 };

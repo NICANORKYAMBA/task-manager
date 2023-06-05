@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { logOutUser } from '../../actions/authActions';
+import { useLocation } from 'react-router-dom';
 import TaskListPage from './TaskListPage';
 import CreateTaskPage from './CreateTaskPage';
 import '../../styles/TaskManagementPage.css';
@@ -12,12 +13,25 @@ const TaskManagementPage = () => {
     userId: '',
     isLoggedIn: false,
     userEmail: '',
+    loginMessage: '',
   });
 
   const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state && location.state.userEmail) {
+      const { userEmail } = location.state;
+      setState((prevState) => ({
+        ...prevState,
+        userEmail,
+        isLoggedIn: true,
+      }));
+    }
+  }, [location]);
 
   const handleCreateButtonClick = () => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       showTaskList: false,
       showCreateForm: true,
@@ -25,7 +39,7 @@ const TaskManagementPage = () => {
   };
 
   const handleViewTasksClick = () => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       showTaskList: true,
       showCreateForm: false,
@@ -33,7 +47,7 @@ const TaskManagementPage = () => {
   };
 
   const handleCreateTaskClose = () => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       showCreateForm: false,
     }));
@@ -41,7 +55,7 @@ const TaskManagementPage = () => {
 
   const handleLogout = () => {
     dispatch(logOutUser());
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       isLoggedIn: false,
       userId: '',
@@ -49,16 +63,7 @@ const TaskManagementPage = () => {
     }));
   };
 
-  const setUserIdHandler = (id, email) => {
-    setState(prevState => ({
-      ...prevState,
-      userId: id,
-      userEmail: email,
-      isLoggedIn: true,
-    }));
-  };
-
-  const { showTaskList, showCreateForm, userId, isLoggedIn, userEmail } = state;
+  const { showTaskList, showCreateForm, userEmail } = state;
 
   return (
     <div className="task-management-container">
@@ -78,30 +83,20 @@ const TaskManagementPage = () => {
 
       <div className="button-section">
         {!showTaskList && (
-          <button
-            className="view-tasks-button"
-            onClick={handleViewTasksClick}
-          >
+          <button className="view-tasks-button" onClick={handleViewTasksClick}>
             View Existing Tasks
           </button>
         )}
         {!showCreateForm && (
-          <button
-            className="create-task-button"
-            onClick={handleCreateButtonClick}
-          >
+          <button className="create-task-button" onClick={handleCreateButtonClick}>
             Create New Task
           </button>
         )}
       </div>
 
-      {showTaskList && !showCreateForm && (
-        <TaskListPage userId={userId} />
-      )}
+      {showTaskList && !showCreateForm && <TaskListPage userId={state.userId} />}
 
-      {showCreateForm && !showTaskList && (
-        <CreateTaskPage onClose={handleCreateTaskClose} setUserId={setUserIdHandler} />
-      )}
+      {showCreateForm && !showTaskList && <CreateTaskPage onClose={handleCreateTaskClose} />}
     </div>
   );
 };
