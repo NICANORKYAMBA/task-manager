@@ -5,7 +5,7 @@ import '../../styles/TaskListPage.css';
 
 const TaskListPage = ({ userId }) => {
   console.log('User ID:', userId);
-  const tasks = useSelector((state) => state.tasks);
+  const tasks = useSelector((state) => state.tasks.tasks);
   console.log('Tasks:', tasks);
   const dispatch = useDispatch();
 
@@ -36,9 +36,9 @@ const TaskListPage = ({ userId }) => {
                   <p className="task-details">
                     Completed: {task.completed ? 'Yes' : 'No'}
                   </p>
-                  <p className="task-details">Created At: {task.created_at}</p>
-                  <p className="task-details">Updated At: {task.updated_at}</p>
-                  <p className="task-details">Task ID: {task.task_id}</p>
+                  <p className="task-details">Created At: {task.createdAt}</p>
+                  <p className="task-details">Updated At: {task.updatedAt}</p>
+                  <p className="task-details">Task ID: {task.id}</p>
                 </li>
               ))}
             </ul>

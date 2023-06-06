@@ -38,7 +38,9 @@ const LoginForm = () => {
       
       if (response && response.status === 200) {
         navigate('/tasks', { state: { userEmail } });
-        console.log('Login successful');
+        console.log('Login successful')
+        // Store the token in session storage
+        sessionStorage.setItem('token', response.data.token);
       } else {
         console.log('Login failed');
       }

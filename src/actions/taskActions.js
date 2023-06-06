@@ -1,9 +1,11 @@
 import {
-  fetchTask,
   fetchTasks,
+  fetchTask,
   addTask,
   deleteTask,
-  updateTask
+  updateTask,
+  extendTasksDueDate,
+  sortTasksByField
 } from "../services/api";
 
 // Action types
@@ -22,129 +24,101 @@ export const DELETE_TASK_FAILURE = 'DELETE_TASK_FAILURE';
 export const UPDATE_TASK_REQUEST = 'UPDATE_TASK_REQUEST';
 export const UPDATE_TASK_SUCCESS = 'UPDATE_TASK_SUCCESS';
 export const UPDATE_TASK_FAILURE = 'UPDATE_TASK_FAILURE';
+export const EXTEND_TASK_DUE_DATE_REQUEST = 'EXTEND_TASK_DUE_DATE_REQUEST';
+export const EXTEND_TASK_DUE_DATE_SUCCESS = 'EXTEND_TASK_DUE_DATE_SUCCESS';
+export const EXTEND_TASK_DUE_DATE_FAILURE = 'EXTEND_TASK_DUE_DATE_FAILURE';
+export const SORT_TASKS_REQUEST = 'SORT_TASKS_REQUEST';
+export const SORT_TASKS_SUCCESS = 'SORT_TASKS_SUCCESS';
+export const SORT_TASKS_FAILURE = 'SORT_TASKS_FAILURE';
 
 // Action creators
-const fetchTasksRequest = () => ({
-  type: FETCH_TASKS_REQUEST
+const requestAction = (type) => ({
+  type
 });
 
-const fetchTasksSuccess = (tasks) => ({
-  type: FETCH_TASKS_SUCCESS,
-  payload: tasks
+const successAction = (type, payload) => ({
+  type,
+  payload
 });
 
-const fetchTasksFailure = (error) => ({
-  type: FETCH_TASKS_FAILURE,
-  payload: error
-});
-
-const fetchTaskRequest = () => ({
-  type: FETCH_TASK_REQUEST
-});
-
-const fetchTaskSuccess = (task) => ({
-  type: FETCH_TASK_SUCCESS,
-  payload: task
-});
-
-const fetchTaskFailure = (error) => ({
-  type: FETCH_TASK_FAILURE,
-  payload: error
-});
-
-const addTaskRequest = () => ({
-  type: ADD_TASK_REQUEST
-});
-
-const addTaskSuccess = (task) => ({
-  type: ADD_TASK_SUCCESS,
-  payload: task
-});
-
-const addTaskFailure = (error) => ({
-  type: ADD_TASK_FAILURE,
-  payload: error
-});
-
-const deleteTaskRequest = () => ({
-  type: DELETE_TASK_REQUEST
-});
-
-const deleteTaskSuccess = (id) => ({
-  type: DELETE_TASK_SUCCESS,
-  payload: id
-});
-
-const deleteTaskFailure = (error) => ({
-  type: DELETE_TASK_FAILURE,
-  payload: error
-});
-
-const updateTaskRequest = () => ({
-  type: UPDATE_TASK_REQUEST
-});
-
-const updateTaskSuccess = (task) => ({
-  type: UPDATE_TASK_SUCCESS,
-  payload: task
-});
-
-const updateTaskFailure = (error) => ({
-  type: UPDATE_TASK_FAILURE,
+const failureAction = (type, error) => ({
+  type,
   payload: error
 });
 
 // Thunk actions
 export const getAllTasks = (userId) => async (dispatch) => {
   try {
-    dispatch(fetchTasksRequest());
+    dispatch(requestAction(FETCH_TASKS_REQUEST));
     const response = await fetchTasks(userId);
     const tasks = response.data;
-    dispatch(fetchTasksSuccess(tasks));
+    dispatch(successAction(FETCH_TASKS_SUCCESS, tasks));
   } catch (error) {
-    dispatch(fetchTasksFailure(error.message));
+    dispatch(failureAction(FETCH_TASKS_FAILURE, error.message));
   }
 };
 
-export const getTask = (id) => async (dispatch) => {
+export const getTaskById = (id) => async (dispatch) => {
   try {
-    dispatch(fetchTaskRequest());
+    dispatch(requestAction(FETCH_TASK_REQUEST));
     const response = await fetchTask(id);
     const task = response.data;
-    dispatch(fetchTaskSuccess(task));
+    dispatch(successAction(FETCH_TASK_SUCCESS, task));
   } catch (error) {
-    dispatch(fetchTaskFailure(error.message));
+    dispatch(failureAction(FETCH_TASK_FAILURE, error.message));
   }
 };
 
-export const addNewTask = (task) => async (dispatch) => {
+export const createTask = (task, config) => async (dispatch) => {
   try {
-    dispatch(addTaskRequest());
-    const response = await addTask(task);
+    dispatch(requestAction(ADD_TASK_REQUEST));
+    const response = await addTask(task, config);
     const newTask = response.data;
-    dispatch(addTaskSuccess(newTask));
+    dispatch(successAction(ADD_TASK_SUCCESS, newTask));
   } catch (error) {
-    dispatch(addTaskFailure(error.message));
+    dispatch(failureAction(ADD_TASK_FAILURE, error.message));
   }
 };
 
-export const taskDeletion = (id) => async (dispatch) => {
+export const deleteTaskById = (id) => async (dispatch) => {
   try {
-    dispatch(deleteTaskRequest());
+    dispatch(requestAction(DELETE_TASK_REQUEST));
     await deleteTask(id);
-    dispatch(deleteTaskSuccess(id));
+    dispatch(successAction(DELETE_TASK_SUCCESS, id));
   } catch (error) {
-    dispatch(deleteTaskFailure(error.message));
+    dispatch(failureAction(DELETE_TASK_FAILURE, error.message));
   }
 };
 
-export const taskUpdate = (id, task) => async (dispatch) => {
+export const updateTaskById = (id, task) => async (dispatch) => {
   try {
-    dispatch(updateTaskRequest());
+    dispatch(requestAction(UPDATE_TASK_REQUEST));
     const response = await updateTask(id, task);
     const updatedTask = response.data;
-    dispatch(updateTaskSuccess(updatedTask));
+    dispatch(successAction(UPDATE_TASK_SUCCESS, updatedTask));
   } catch (error) {
-    dispatch(updateTaskFailure(error.message));
+    dispatch(failureAction(UPDATE_TASK_FAILURE, error.message));
+  }
+};
+
+export const extendTaskDueDateById = (id, dueDate) => async (dispatch) => {
+  try {
+    dispatch(requestAction(EXTEND_TASK_DUE_DATE_REQUEST));
+    const response = await extendTasksDueDate(id, dueDate);
+    const extendedTask = response.data;
+    dispatch(successAction(EXTEND_TASK_DUE_DATE_SUCCESS, extendedTask));
+  } catch (error) {
+    dispatch(failureAction(EXTEND_TASK_DUE_DATE_FAILURE, error.message));
+  }
+};
+
+export const sortTaskByField = (field) => async (dispatch) => {
+  try {
+    dispatch(requestAction(SORT_TASKS_REQUEST));
+    const response = await sortTasksByField(field);
+    const sortedTasks = response.data;
+    dispatch(successAction(SORT_TASKS_SUCCESS, sortedTasks));
+  } catch (error) {
+    dispatch(failureAction(SORT_TASKS_FAILURE, error.message));
   }
 };

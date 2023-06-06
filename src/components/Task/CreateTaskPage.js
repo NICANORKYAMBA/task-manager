@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addNewTask } from '../../actions/taskActions';
+import { createTask } from '../../actions/taskActions';
 import '../../styles/CreateTaskPage.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,17 @@ const CreateTaskPage = () => {
       completed: false,
     };
 
-    dispatch(addNewTask(newTask));
+    // Retrieve the token from session storage
+    const token = sessionStorage.getItem('token');
+
+    // Set the request headers with the token
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    dispatch(createTask(newTask, config));
 
     console.log('New task added:', newTask);
 
@@ -83,9 +93,9 @@ const CreateTaskPage = () => {
             required
           >
             <option value="">Select importance</option>
-            <option value="low">Less Important</option>
-            <option value="medium">Important</option>
-            <option value="high">Very Important</option>
+            <option value="less important">Less Important</option>
+            <option value="important">Important</option>
+            <option value="very important">Very Important</option>
           </select>
         </div>
         <div className="form-group">

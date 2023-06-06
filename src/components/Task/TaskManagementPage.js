@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { logOutUser } from '../../actions/authActions';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import TaskListPage from './TaskListPage';
 import CreateTaskPage from './CreateTaskPage';
 import '../../styles/TaskManagementPage.css';
@@ -18,6 +18,7 @@ const TaskManagementPage = () => {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (location.state && location.state.userEmail) {
@@ -61,6 +62,8 @@ const TaskManagementPage = () => {
       userId: '',
       userEmail: '',
     }));
+
+    navigate('/'); // Redirect to the landing page after logout
   };
 
   const { showTaskList, showCreateForm, userEmail } = state;

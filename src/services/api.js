@@ -10,7 +10,7 @@ export const signup = (email, password) => {
 };
 
 export const logout = () => {
-  return api.post('api/auth/logout');
+  return api.get('api/auth/logout');
 };
 
 export const signupWithGoogle = () => {
@@ -42,16 +42,24 @@ export const fetchTask = (id) => {
   return api.get(`api/tasks/${id}`);
 };
 
-export const addTask = (task) => {
-  return api.post('/tasks', task);
+export const addTask = (task, config) => {
+  return api.post('/api/tasks', task, config);
 };
 
 export const deleteTask = (id) => {
-  return api.delete(`/tasks/${id}`);
+  return api.delete(`/api/tasks/${id}`);
 };
 
 export const updateTask = (id, task) => {
-  return api.put(`/tasks/${id}`, task);
+  return api.put(`/api/tasks/${id}`, task);
+};
+
+export const extendTasksDueDate = (id, dueDate) => {
+  return api.put(`/api/tasks/${id}/extend`, { dueDate });
+};
+
+export const sortTasksByField = (field) => {
+  return api.get(`/api/tasks/sort?field=${field}`);
 };
 
 // User endpoints
