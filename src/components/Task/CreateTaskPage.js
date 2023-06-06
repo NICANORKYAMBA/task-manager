@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createTask } from '../../actions/taskActions';
 import '../../styles/CreateTaskPage.css';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,9 @@ const CreateTaskPage = () => {
   const [dueDate, setDueDate] = useState('');
   const [importance, setImportance] = useState('');
 
+  // Retrieve the token from the Redux store
+  const token = useSelector((state) => state.auth.user.token);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -22,9 +25,6 @@ const CreateTaskPage = () => {
       importance,
       completed: false,
     };
-
-    // Retrieve the token from session storage
-    const token = sessionStorage.getItem('token');
 
     // Set the request headers with the token
     const config = {

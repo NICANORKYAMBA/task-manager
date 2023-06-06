@@ -18,9 +18,9 @@ export const authRequest = () => ({
   type: AUTH_REQUEST
 });
 
-export const authSuccess = (user) => ({
+export const authSuccess = (user, userId, userEmail) => ({
   type: AUTH_SUCCESS,
-  payload: user
+  payload: { user, userId, userEmail }
 });
 
 export const authFailure = (error) => {
@@ -69,8 +69,8 @@ export const loginUser = ({ email, password }) => {
         const emailParts = email.split('@');
         const userEmail = emailParts[0]; // Extract the part before '@' symbol
         const successMessage = message.split(',')[1].trim();
-        const user = { email: userEmail, token, userId };
-        dispatch(authSuccess(user));
+        const user = { email: userEmail, token };
+        dispatch(authSuccess(user, userId, userEmail));
         return { response, userEmail, successMessage };
       } else {
         dispatch(authFailure("Failed to login"));
@@ -95,7 +95,7 @@ export const signupUser = ({ email, password }) => {
       dispatch(authRequest());
       const response = await signup(email, password);
       const user = response.data;
-      dispatch(authSuccess(user));
+      dispatch(authSuccess(user, user.userId, email));
       return response; // Return the response
     } catch (error) {
       handleErrors(error, dispatch, authFailure);
@@ -112,7 +112,7 @@ const authenticateWithGoogle = async (callback, dispatch) => {
     const response = await callback(code);
     const user = response.data;
 
-    dispatch(authSuccess(user));
+    dispatch(authSuccess(user, user.userId, user.email));
   } catch (error) {
     handleErrors(error, dispatch, authFailure);
   }
@@ -135,7 +135,7 @@ export const checkAuth = () => {
     try {
       const response = await checkAuthentication();
       const user = response.data;
-      dispatch(authSuccess(user));
+      dispatch(authSuccess(user, user.userId, user.email));
     } catch (error) {
       console.log(error);
       // Dispatch an appropriate action or show an error message to the user
@@ -149,8 +149,7 @@ export const logOutUser = () => {
       dispatch(authRequest());
       await logout(); // Call the logout API
 
-      // Dispatch the LOGOUT action to update the Redux state
-      dispatch(logOut());
+      dispatch(logOut()); // Dispatch the LOGOUT action to update the Redux state
     } catch (error) {
       console.log(error);
       const errorMessage = 'Failed to logout';

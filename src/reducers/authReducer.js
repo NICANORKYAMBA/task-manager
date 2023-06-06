@@ -7,6 +7,8 @@ import {
 
 const initialState = {
   user: null,
+  userId: null,
+  userEmail: null,
   isAuthenticated: false,
   loading: false,
   error: null
@@ -23,7 +25,9 @@ const authReducer = (state = initialState, action) => {
     case AUTH_SUCCESS:
       return {
         ...state,
-        user: action.payload,
+        user: action.payload.user,
+        userId: action.payload.userId,
+        userEmail: action.payload.userEmail,
         isAuthenticated: true,
         loading: false,
         error: null

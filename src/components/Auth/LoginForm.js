@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { loginUser } from '../../actions/authActions';
+import SignupForm from './SignupForm';
 import '../../styles/LoginForm.css';
 
 const LoginForm = () => {
@@ -10,35 +11,36 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); // New state for signup modal
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  // Validate the form fields
-  const validationErrors = {};
-  if (!email) {
-    validationErrors.email = 'Email is required';
-  }
-  if (!password) {
-    validationErrors.password = 'Password is required';
-  }
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-  
+    // Validate the form fields
+    const validationErrors = {};
+    if (!email) {
+      validationErrors.email = 'Email is required';
+    }
+    if (!password) {
+      validationErrors.password = 'Password is required';
+    }
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { response, userEmail, successMessage } = await dispatch(loginUser({ email, password }));
       console.log(response);
       console.log(userEmail);
       console.log(successMessage);
-      
+
       if (response && response.status === 200) {
-        navigate('/tasks', { state: { userEmail } });
-        console.log('Login successful')
+        navigate('/tasks');
+        console.log('Login successful');
         // Store the token in session storage
         sessionStorage.setItem('token', response.data.token);
       } else {
@@ -58,6 +60,14 @@ const LoginForm = () => {
     } else if (name === 'password') {
       setPassword(value);
     }
+  };
+
+  const handleSignupLinkClick = () => {
+    setIsSignupModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsSignupModalOpen(false);
   };
 
   if (isLoading) {
@@ -104,12 +114,6 @@ const LoginForm = () => {
             <i className="bx bx-hide eye-icon"></i>
           </div>
 
-          <div className="form-link">
-            <a href="#" className="forgot-pass">
-              Forgot password?
-            </a>
-          </div>
-
           <div className="field button-field">
             <button type="submit">Login</button>
           </div>
@@ -117,7 +121,10 @@ const LoginForm = () => {
 
         <div className="form-link">
           <span>
-            Don't have an account? <a href="#" className="link signup-link">Signup</a>
+            Don't have an account?{' '}
+            <a href="#" className="link signup-link" onClick={handleSignupLinkClick}>
+              Signup
+            </a>
           </span>
         </div>
       </div>
@@ -130,6 +137,18 @@ const LoginForm = () => {
           <span>Login with Google</span>
         </a>
       </div>
+
+      {isSignupModalOpen && (
+        <div className="signup-modal">
+          <div className="modal-content">
+            <span className="close-modal" onClick={handleCloseModal}>
+              &times;
+            </span>
+            {/* Render your existing signup form component here */}
+            <SignupForm />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
