@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { signupUser } from '../../actions/authActions';
+import LoginForm from './LoginForm';
 import '../../styles/SignupForm.css';
 
 const SignupForm = () => {
@@ -10,6 +11,7 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -36,6 +38,8 @@ const SignupForm = () => {
       if (response && response.status === 201) { // Assuming 201 for successful signup
         navigate('/tasks');
         console.log('Signup successful');
+        // Store the token in session storage
+        sessionStorage.setItem('token', response.data.token);
       } else {
         console.log('Signup failed');
       }
@@ -53,6 +57,14 @@ const SignupForm = () => {
     } else if (name === 'password') {
       setPassword(value);
     }
+  };
+
+  const handleLoginLinkClick = () => {
+    setIsLoginModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsLoginModalOpen(false);
   };
 
   if (isLoading) {
@@ -99,6 +111,24 @@ const SignupForm = () => {
           </button>
         </div>
       </form>
+
+      <div className="signup-form__link">
+        Already have an account?{' '}
+        <span className="signup-form__link-text" onClick={handleLoginLinkClick}>
+          Login
+        </span>
+      </div>
+
+      {isLoginModalOpen && (
+        <div className="login-modal">
+          <div className="modal-content">
+            <span className="close-modal" onClick={handleCloseModal}>
+              &times;
+            </span>
+            <LoginForm />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

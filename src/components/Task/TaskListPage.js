@@ -1,12 +1,16 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getAllTasks } from '../../actions/taskActions';
+import { getAllTasks, deleteTaskById } from '../../actions/taskActions';
 import '../../styles/TaskListPage.css';
+import UpdateTaskForm from './UpdateTaskForm';
+import DeleteTaskForm from './DeleteTaskForm';
 
 const TaskListPage = () => {
   const userId = useSelector((state) => state.auth.userId);
   const tasks = useSelector((state) => state.tasks.tasks);
   const dispatch = useDispatch();
+  const [updateTaskId, setUpdateTaskId] = useState(null);
+  const [deleteTaskId, setDeleteTaskId] = useState(null);
 
   const fetchUserTasks = useCallback(() => {
     dispatch(getAllTasks(userId));
@@ -15,6 +19,28 @@ const TaskListPage = () => {
   useEffect(() => {
     fetchUserTasks();
   }, [fetchUserTasks]);
+
+  const handleUpdateClick = (taskId) => {
+    setUpdateTaskId(taskId);
+  };
+
+  const handleDeleteClick = (taskId) => {
+    setDeleteTaskId(taskId);
+  };
+
+  const handleCloseForms = () => {
+    setUpdateTaskId(null);
+    setDeleteTaskId(null);
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await dispatch(deleteTaskById(taskId));
+      fetchUserTasks();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="task-list-container">
@@ -38,6 +64,29 @@ const TaskListPage = () => {
                   <p className="task-details">Created At: {new Date(task.createdAt).toLocaleString()}</p>
                   <p className="task-details">Updated At: {new Date(task.updatedAt).toLocaleString()}</p>
                   <p className="task-details">Task ID: {task._id}</p>
+                  <div className="task-button-container">
+                    <button className="update-button" onClick={() => handleUpdateClick(task._id)}>
+                      Update Task
+                    </button>
+                    <button className="delete-button" onClick={() => handleDeleteClick(task._id)}>
+                      Delete Task
+                    </button>
+                  </div>
+                  {updateTaskId === task._id && (
+                    <div className="update-form-container">
+                      <UpdateTaskForm taskId={task._id} onClose={handleCloseForms} />
+                    </div>
+                  )}
+                  {deleteTaskId === task._id && (
+                    <div className="delete-form-container">
+                      <DeleteTaskForm
+                        userId={userId}
+                        taskId={task._id}
+                        onClose={handleCloseForms}
+                        onDelete={handleDeleteTask}
+                      />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

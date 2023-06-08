@@ -38,20 +38,20 @@ export const fetchTasks = (userId) => {
   return api.get(`/api/tasks/${userId}`);
 };
 
-export const fetchTask = (id) => {
-  return api.get(`api/tasks/${id}`);
+export const fetchTask = (userId, taskId, config) => {
+  return api.get(`/api/tasks/${userId}/${taskId}`, config);
 };
 
 export const addTask = (task, config) => {
   return api.post('/api/tasks', task, config);
 };
 
-export const deleteTask = (id) => {
-  return api.delete(`/api/tasks/${id}`);
+export const deleteTask = (userId, taskId, config) => {
+  return api.delete(`/api/tasks/delete/${userId}/${taskId}`, config);
 };
 
-export const updateTask = (id, task) => {
-  return api.put(`/api/tasks/${id}`, task);
+export const updateTask = (userId, taskId, task, config) => {
+  return api.put(`/api/tasks/update/${userId}/${taskId}`, task, config);
 };
 
 export const extendTasksDueDate = (id, dueDate) => {

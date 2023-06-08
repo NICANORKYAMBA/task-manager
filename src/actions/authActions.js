@@ -1,12 +1,12 @@
 import { GoogleLogin } from '@leecheuk/react-google-login';
 import { GOOGLE_CLIENT_ID } from '../config/config';
 import {
-  login,
-  signup,
-  signupWithGoogleCallback,
-  loginWithGoogleCallback,
-  checkAuthentication,
-  logout
+	login,
+	signup,
+	signupWithGoogleCallback,
+	loginWithGoogleCallback,
+	checkAuthentication,
+	logout
 } from '../services/api';
 
 export const AUTH_REQUEST = 'AUTH_REQUEST';

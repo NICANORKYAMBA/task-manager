@@ -2,11 +2,9 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createTask } from '../../actions/taskActions';
 import '../../styles/CreateTaskPage.css';
-import { useNavigate } from 'react-router-dom';
 
-const CreateTaskPage = () => {
+const CreateTaskPage = ({ onClose }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -42,11 +40,11 @@ const CreateTaskPage = () => {
     setDueDate('');
     setImportance('');
 
-    navigate('/tasks');
+    onClose(); // Close the create task form
   };
 
   const handleCancel = () => {
-    navigate('/tasks');
+    onClose(); // Close the create task form
   };
 
   return (

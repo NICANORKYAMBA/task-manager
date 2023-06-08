@@ -1,3 +1,5 @@
+/* task-list-page.css */
+
 .task-list-container {
   background-color: #fff;
   padding: 20px;
@@ -29,6 +31,7 @@
 
 .task-list-item {
   margin-bottom: 20px;
+  position: relative;
 }
 
 .task-title {
@@ -55,8 +58,57 @@
   margin-bottom: 10px;
 }
 
-.task-list-empty-message {
+.empty-message {
   font: 1em sans-serif;
   color: #888;
   text-align: center;
+}
+
+.task-button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.update-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-button {
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.update-form-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.delete-form-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

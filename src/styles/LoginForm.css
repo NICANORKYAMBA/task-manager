@@ -70,13 +70,10 @@ header {
   color: #666666;
 }
 
-.forgot-pass {
-  text-decoration: none;
-  color: #666666;
-}
-
-.link.signup-link {
-  color: #2196f3;
+.login-form__link-text {
+  color: #085aa1;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .button-field button {
@@ -99,31 +96,6 @@ header {
 .line {
   margin: 20px 0;
   border-top: 1px solid #dddddd;
-}
-
-.media-options {
-  text-align: center;
-}
-
-.field.google {
-  display: inline-block;
-  padding: 10px;
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-  color: #666666;
-  text-decoration: none;
-  transition: background-color 0.3s;
-}
-
-.field.google:hover {
-  background-color: #eeeeee;
-}
-
-.google-img {
-  width: 20px;
-  vertical-align: middle;
-  margin-right: 10px;
 }
 
 /* Styles for Signup Form Modal */
@@ -149,7 +121,7 @@ header {
   position: relative;
 }
 
-.signup-modal .close-button {
+.signup-modal .close-modal {
   position: absolute;
   top: 10px;
   right: 10px;

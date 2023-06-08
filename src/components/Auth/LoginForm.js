@@ -11,7 +11,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false); // New state for signup modal
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const dispatch = useDispatch();
    const navigate = useNavigate();
 
@@ -119,24 +119,15 @@ const LoginForm = () => {
           </div>
         </form>
 
-        <div className="form-link">
-          <span>
+        <div className="login-form__link">
             Don't have an account?{' '}
-            <a href="#" className="link signup-link" onClick={handleSignupLinkClick}>
+            <span className="login-form__link-text" onClick={handleSignupLinkClick}>
               Signup
-            </a>
-          </span>
+            </span>
         </div>
       </div>
 
       <div className="line"></div>
-
-      <div className="media-options">
-        <a href="#" className="field google">
-          <img src="/src/images/google.png" alt="" className="google-img" />
-          <span>Login with Google</span>
-        </a>
-      </div>
 
       {isSignupModalOpen && (
         <div className="signup-modal">
@@ -144,7 +135,6 @@ const LoginForm = () => {
             <span className="close-modal" onClick={handleCloseModal}>
               &times;
             </span>
-            {/* Render your existing signup form component here */}
             <SignupForm />
           </div>
         </div>

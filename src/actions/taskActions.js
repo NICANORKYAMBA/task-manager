@@ -1,11 +1,11 @@
 import {
-  fetchTasks,
-  fetchTask,
-  addTask,
-  deleteTask,
-  updateTask,
-  extendTasksDueDate,
-  sortTasksByField
+	fetchTasks,
+	fetchTask,
+	addTask,
+	deleteTask,
+	updateTask,
+	extendTasksDueDate,
+	sortTasksByField
 } from "../services/api";
 
 // Action types
@@ -58,12 +58,13 @@ export const getAllTasks = (userId) => async (dispatch) => {
   }
 };
 
-export const getTaskById = (id) => async (dispatch) => {
+export const getTaskById = (userId, taskId, config) => async (dispatch) => {
   try {
     dispatch(requestAction(FETCH_TASK_REQUEST));
-    const response = await fetchTask(id);
+    const response = await fetchTask(userId, taskId, config);
     const task = response.data;
     dispatch(successAction(FETCH_TASK_SUCCESS, task));
+    return response;
   } catch (error) {
     dispatch(failureAction(FETCH_TASK_FAILURE, error.message));
   }
@@ -80,20 +81,40 @@ export const createTask = (task, config) => async (dispatch) => {
   }
 };
 
-export const deleteTaskById = (id) => async (dispatch) => {
+export const deleteTaskById = (userId, taskId, config) => async (dispatch) => {
   try {
     dispatch(requestAction(DELETE_TASK_REQUEST));
-    await deleteTask(id);
-    dispatch(successAction(DELETE_TASK_SUCCESS, id));
+    const response = await deleteTask(userId, taskId, config);
+    const statusCode = response.status;
+    console.log(statusCode);
+    
+    if (statusCode === 200) {
+      dispatch(successAction(DELETE_TASK_SUCCESS, taskId));
+      return { success: true, message: "Task deleted successfully" };
+    } else {
+      const errorMessage = getErrorMessageFromStatusCode(statusCode);
+      dispatch(failureAction(DELETE_TASK_FAILURE, errorMessage));
+    }
   } catch (error) {
     dispatch(failureAction(DELETE_TASK_FAILURE, error.message));
   }
 };
 
-export const updateTaskById = (id, task) => async (dispatch) => {
+const getErrorMessageFromStatusCode = (statusCode) => {
+  // Map the status code to an appropriate error message
+  if (statusCode === 401) {
+    return 'Not authorized to delete the task';
+  } else if (statusCode === 404) {
+    return 'Task not found';
+  } else {
+    return 'An error occurred while deleting the task';
+  }
+};
+
+export const updateTaskById = (userId, taskId, task, config) => async (dispatch) => {
   try {
     dispatch(requestAction(UPDATE_TASK_REQUEST));
-    const response = await updateTask(id, task);
+    const response = await updateTask(userId, taskId, task, config);
     const updatedTask = response.data;
     dispatch(successAction(UPDATE_TASK_SUCCESS, updatedTask));
   } catch (error) {
@@ -101,10 +122,10 @@ export const updateTaskById = (id, task) => async (dispatch) => {
   }
 };
 
-export const extendTaskDueDateById = (id, dueDate) => async (dispatch) => {
+export const extendTaskDueDateById = (userId, taskId, dueDate) => async (dispatch) => {
   try {
     dispatch(requestAction(EXTEND_TASK_DUE_DATE_REQUEST));
-    const response = await extendTasksDueDate(id, dueDate);
+    const response = await extendTasksDueDate(userId, taskId, dueDate);
     const extendedTask = response.data;
     dispatch(successAction(EXTEND_TASK_DUE_DATE_SUCCESS, extendedTask));
   } catch (error) {

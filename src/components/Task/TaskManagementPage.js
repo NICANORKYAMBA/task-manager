@@ -49,6 +49,7 @@ const TaskManagementPage = () => {
     setState((prevState) => ({
       ...prevState,
       showCreateForm: false,
+      showTaskList: true,
     }));
   };
 
