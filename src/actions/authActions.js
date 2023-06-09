@@ -103,6 +103,20 @@ export const signupUser = ({ email, password }) => {
   };
 };
 
+export const logOutUser = (config) => {
+  return async (dispatch) => {
+    try {
+      dispatch(authRequest());
+      await logout(config);
+      dispatch(logOut());
+    } catch (error) {
+      console.log(error);
+      const errorMessage = 'Failed to logout';
+      dispatch(authFailure(errorMessage));
+    }
+  };
+};
+
 const authenticateWithGoogle = async (callback, dispatch) => {
   try {
     dispatch(authRequest());
@@ -139,21 +153,6 @@ export const checkAuth = () => {
     } catch (error) {
       console.log(error);
       // Dispatch an appropriate action or show an error message to the user
-    }
-  };
-};
-
-export const logOutUser = () => {
-  return async (dispatch) => {
-    try {
-      dispatch(authRequest());
-      await logout(); // Call the logout API
-
-      dispatch(logOut()); // Dispatch the LOGOUT action to update the Redux state
-    } catch (error) {
-      console.log(error);
-      const errorMessage = 'Failed to logout';
-      dispatch(authFailure(errorMessage));
     }
   };
 };

@@ -9,8 +9,8 @@ export const signup = (email, password) => {
   return api.post('api/auth/signup', { email, password });
 };
 
-export const logout = () => {
-  return api.get('api/auth/logout');
+export const logout = (config) => {
+  return api.get('api/auth/logout', config);
 };
 
 export const signupWithGoogle = () => {
@@ -63,18 +63,18 @@ export const sortTasksByField = (field) => {
 };
 
 // User endpoints
-export const fetchUsers = () => {
-  return api.get('/users');
+export const fetchUsers = (config) => {
+  return api.get('/api/users', config);
 };
 
-export const fetchUser = (id) => {
-  return api.get(`/users/${id}`);
+export const fetchUser = (id, config) => {
+  return api.get(`/api/users/${id}`, config);
 };
 
-export const deleteUser = (id) => {
-  return api.delete(`/users/${id}`);
+export const deleteUser = (id, config) => {
+  return api.delete(`/api/users/delete/${id}`, config);
 };
 
-export const updateUser = (id, user) => {
-  return api.put(`/users/${id}`, user);
+export const updatedUser = (id, user, config) => {
+  return api.put(`/api/users/update/${id}`, user, config);
 };
