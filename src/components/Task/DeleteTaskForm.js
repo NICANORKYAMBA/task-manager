@@ -2,9 +2,43 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteTaskById } from '../../actions/taskActions';
-import '../../styles/DeleteTaskForm.css';
+import {
+  Typography,
+  Button,
+  CircularProgress,
+  makeStyles,
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  deleteForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.spacing(1),
+    boxShadow: theme.shadows[2],
+  },
+  deleteMessage: {
+    marginBottom: theme.spacing(2),
+  },
+  errorMessage: {
+    color: theme.palette.error.main,
+    marginBottom: theme.spacing(2),
+  },
+  deleteButton: {
+    marginTop: theme.spacing(2),
+  },
+}));
 
 const DeleteTaskForm = ({ taskId, onClose, onDelete }) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,22 +79,34 @@ const DeleteTaskForm = ({ taskId, onClose, onDelete }) => {
   };
 
   return (
-    <div className="delete-form-container">
-      <div className="delete-form">
+    <div className={classes.container}>
+      <div className={classes.deleteForm}>
         {deletionStatus === 'success' ? ( // Render success message if deletion status is 'success'
-          <p className="delete-success-message">Task deleted successfully!</p>
+          <Typography variant="subtitle1" className={classes.deleteMessage}>
+            Task deleted successfully!
+          </Typography>
         ) : (
-          <p className="delete-message">Are you sure you want to delete this task?</p>
+          <>
+            <Typography variant="subtitle1" className={classes.deleteMessage}>
+              Are you sure you want to delete this task?
+            </Typography>
+            {errorMessage && (
+              <Typography variant="subtitle2" className={classes.errorMessage}>
+                {errorMessage}
+              </Typography>
+            )}
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.deleteButton}
+              onClick={handleDeleteTask}
+              disabled={isLoading}
+              startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}
+            >
+              {isLoading ? 'Deleting...' : 'Delete Task'}
+            </Button>
+          </>
         )}
-        {errorMessage && <div className="delete-form-error">{errorMessage}</div>}
-        <div className="delete-form-buttons">
-          <button className="delete-button" onClick={handleDeleteTask} disabled={isLoading}>
-            {isLoading ? 'Deleting...' : 'Delete Task'}
-          </button>
-          <button className="cancel-button" onClick={onClose}>
-            Cancel
-          </button>
-        </div>
       </div>
     </div>
   );

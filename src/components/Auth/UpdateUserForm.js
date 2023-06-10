@@ -1,7 +1,34 @@
 import React, { useState } from 'react';
-import '../../styles/UpdateUserForm.css';
+import { makeStyles } from '@material-ui/core/styles';
+import {
+  Typography,
+  TextField,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 
-const UpdateUserForm = ({ onUpdate }) => {
+const useStyles = makeStyles((theme) => ({
+  formContainer: {
+    marginTop: theme.spacing(2),
+  },
+  formTitle: {
+    marginBottom: theme.spacing(2),
+    display: 'flex',
+    alignItems: 'center',
+  },
+  formField: {
+    marginBottom: theme.spacing(2),
+  },
+  closeIcon: {
+    marginLeft: 'auto',
+  },
+}));
+
+const UpdateUserForm = ({ onUpdate, onClose }) => {
+  const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -19,20 +46,53 @@ const UpdateUserForm = ({ onUpdate }) => {
   };
 
   return (
-    <div>
-      <h3>Update User Information</h3>
+    <Container maxWidth="sm">
+      <div className={classes.formTitle}>
+        <Typography variant="h5">Update User Information</Typography>
+        <IconButton
+          className={classes.closeIcon}
+          onClick={onClose}
+          aria-label="Close"
+        >
+          <CloseIcon />
+        </IconButton>
+      </div>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input type="email" id="email" value={email} onChange={handleEmailChange} />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input type="password" id="password" value={password} onChange={handlePasswordChange} />
-        </div>
-        <button type="submit">Update</button>
+        <Grid container spacing={2} className={classes.formContainer}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              id="email"
+              label="Email"
+              value={email}
+              onChange={handleEmailChange}
+              className={classes.formField}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              type="password"
+              id="password"
+              label="Password"
+              value={password}
+              onChange={handlePasswordChange}
+              className={classes.formField}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              Update
+            </Button>
+          </Grid>
+        </Grid>
       </form>
-    </div>
+    </Container>
   );
 };
 

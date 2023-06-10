@@ -1,24 +1,76 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { ClipLoader } from 'react-spinners';
+import { TextField, Button, Typography, CircularProgress, Modal, IconButton, InputAdornment } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import { loginUser } from '../../actions/authActions';
 import SignupForm from './SignupForm';
-import '../../styles/LoginForm.css';
+
+const useStyles = makeStyles((theme) => ({
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '50vh',
+  },
+  formContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '300px',
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+  },
+  formTitle: {
+    marginBottom: theme.spacing(2),
+  },
+  formField: {
+    marginBottom: theme.spacing(2),
+  },
+  buttonField: {
+    marginTop: theme.spacing(2),
+  },
+  signupLink: {
+    marginTop: theme.spacing(2),
+    textAlign: 'center',
+  },
+  signupLinkText: {
+    cursor: 'pointer',
+    color: theme.palette.primary.main,
+    fontWeight: 'bold',
+  },
+  modalContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '300px',
+    padding: theme.spacing(4),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: theme.shape.borderRadius,
+  },
+  closeIcon: {
+    alignSelf: 'flex-end',
+    cursor: 'pointer',
+  },
+}));
 
 const LoginForm = () => {
+  const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // New state for password visibility
   const dispatch = useDispatch();
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form fields
     const validationErrors = {};
     if (!email) {
       validationErrors.email = 'Email is required';
@@ -33,15 +85,10 @@ const LoginForm = () => {
 
     setIsLoading(true);
     try {
-      const { response, userEmail, successMessage } = await dispatch(loginUser({ email, password }));
-      console.log(response);
-      console.log(userEmail);
-      console.log(successMessage);
+      const { response, userEmail } = await dispatch(loginUser({ email, password }));
 
       if (response && response.status === 200) {
         navigate('/tasks');
-        console.log('Login successful');
-        // Store the token in session storage
         sessionStorage.setItem('token', response.data.token);
       } else {
         console.log('Login failed');
@@ -70,75 +117,86 @@ const LoginForm = () => {
     setIsSignupModalOpen(false);
   };
 
+  const handleTogglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  };
+
   if (isLoading) {
     return (
-      <div className="spinner">
-        <ClipLoader color="aqua" loading={isLoading} size={50} />
+      <div className={classes.form}>
+        <CircularProgress color="primary" />
       </div>
     );
   }
 
   return (
-    <div className="form login">
-      <div className="form-content">
-        <header>Login</header>
+    <div className={classes.form}>
+      <div className={classes.formContent}>
+        <Typography variant="h5" className={classes.formTitle}>
+          Login
+        </Typography>
         <form onSubmit={handleSubmit}>
-          <div className="field input-field">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              placeholder="Email"
-              className="input"
-              name="email"
-              value={email}
-              onChange={handleChange}
-              required
-            />
-            {errors.email && <div className="form__error">{errors.email}</div>}
-          </div>
+          <TextField
+            fullWidth
+            type="email"
+            id="email"
+            label="Email"
+            placeholder="Email"
+            className={classes.formField}
+            name="email"
+            value={email}
+            onChange={handleChange}
+            required
+            error={!!errors.email}
+            helperText={errors.email}
+          />
 
-          <div className="field input-field">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              placeholder="Password"
-              className="password"
-              name="password"
-              value={password}
-              onChange={handleChange}
-              required
-            />
-            {errors.password && <div className="form__error">{errors.password}</div>}
-            <i className="bx bx-hide eye-icon"></i>
-          </div>
+          <TextField
+            fullWidth
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            label="Password"
+            placeholder="Password"
+            className={classes.formField}
+            name="password"
+            value={password}
+            onChange={handleChange}
+            required
+            error={!!errors.password}
+            helperText={errors.password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleTogglePasswordVisibility} edge="end">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
 
-          <div className="field button-field">
-            <button type="submit">Login</button>
-          </div>
+          <Button type="submit" variant="contained" color="primary" fullWidth className={classes.buttonField}>
+            Login
+          </Button>
         </form>
 
-        <div className="login-form__link">
-            Don't have an account?{' '}
-            <span className="login-form__link-text" onClick={handleSignupLinkClick}>
-              Signup
-            </span>
+        <div className={classes.signupLink}>
+          Don't have an account?{' '}
+          <Typography variant="body1" className={classes.signupLinkText} onClick={handleSignupLinkClick}>
+            Signup
+          </Typography>
         </div>
       </div>
 
-      <div className="line"></div>
-
-      {isSignupModalOpen && (
-        <div className="signup-modal">
-          <div className="modal-content">
-            <span className="close-modal" onClick={handleCloseModal}>
-              &times;
-            </span>
-            <SignupForm />
-          </div>
+      <Modal open={isSignupModalOpen} onClose={handleCloseModal}>
+        <div className={classes.modalContent}>
+          <Typography variant="h5">Signup</Typography>
+          <span className={classes.closeIcon} onClick={handleCloseModal}>
+            &times;
+          </span>
+          <SignupForm />
         </div>
-      )}
+      </Modal>
     </div>
   );
 };

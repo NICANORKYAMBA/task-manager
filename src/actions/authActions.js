@@ -1,11 +1,6 @@
-import { GoogleLogin } from '@leecheuk/react-google-login';
-import { GOOGLE_CLIENT_ID } from '../config/config';
 import {
 	login,
 	signup,
-	signupWithGoogleCallback,
-	loginWithGoogleCallback,
-	checkAuthentication,
 	logout
 } from '../services/api';
 
@@ -113,46 +108,6 @@ export const logOutUser = (config) => {
       console.log(error);
       const errorMessage = 'Failed to logout';
       dispatch(authFailure(errorMessage));
-    }
-  };
-};
-
-const authenticateWithGoogle = async (callback, dispatch) => {
-  try {
-    dispatch(authRequest());
-
-    const { code } = await GoogleLogin.signIn(GOOGLE_CLIENT_ID);
-
-    const response = await callback(code);
-    const user = response.data;
-
-    dispatch(authSuccess(user, user.userId, user.email));
-  } catch (error) {
-    handleErrors(error, dispatch, authFailure);
-  }
-};
-
-export const signupUserWithGoogle = () => {
-  return async (dispatch) => {
-    await authenticateWithGoogle(signupWithGoogleCallback, dispatch);
-  };
-};
-
-export const loginUserWithGoogle = () => {
-  return async (dispatch) => {
-    await authenticateWithGoogle(loginWithGoogleCallback, dispatch);
-  };
-};
-
-export const checkAuth = () => {
-  return async (dispatch) => {
-    try {
-      const response = await checkAuthentication();
-      const user = response.data;
-      dispatch(authSuccess(user, user.userId, user.email));
-    } catch (error) {
-      console.log(error);
-      // Dispatch an appropriate action or show an error message to the user
     }
   };
 };

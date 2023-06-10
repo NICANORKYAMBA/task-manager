@@ -1,9 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTaskById, updateTaskById } from '../../actions/taskActions';
+import {
+  TextField,
+  Button,
+  CircularProgress,
+  makeStyles,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  Snackbar,
+} from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 import '../../styles/UpdateTaskForm.css';
 
+const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    margin: theme.spacing(4),
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    maxWidth: 400,
+    width: '100%',
+  },
+  formField: {
+    marginBottom: theme.spacing(2),
+  },
+  button: {
+    marginTop: theme.spacing(2),
+  },
+}));
+
+const Alert = (props) => {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
+
 const UpdateTaskForm = ({ taskId, onClose }) => {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const token = useSelector((state) => state.auth.user.token);
   const userId = useSelector((state) => state.auth.userId);
@@ -88,68 +129,77 @@ const UpdateTaskForm = ({ taskId, onClose }) => {
   }, [isSuccess, onClose]);
 
   const setFormattedDueDate = (value) => {
-    const formattedDate = value.replace("T", " ").substring(0, 16); // Format the date string
+    const formattedDate = value.replace('T', ' ').substring(0, 16); // Format the date string
     setDueDate(formattedDate);
   };
 
+  const handleCloseSnackbar = () => {
+    setErrorMessage('');
+  };
+
   return (
-    <div className="update-form-container">
-      {errorMessage && <div className="update-form-message update-form-error">{errorMessage}</div>}
-      {isSuccess && <div className="update-form-message update-form-success">{successMessage}</div>}
-      <form className="update-form" onSubmit={handleUpdateTask}>
-        <div>
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="description">Description</label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          ></textarea>
-        </div>
-        <div>
-          <label htmlFor="dueDate">Due Date</label>
-          <input
-            type="datetime-local"
-            id="dueDate"
-            value={dueDate}
-            onChange={(e) => setFormattedDueDate(e.target.value)}
-          />
-        </div>
-        <div>
-          <label htmlFor="importance">Importance</label>
-          <select
-            id="importance"
-            value={importance}
-            onChange={(e) => setImportance(e.target.value)}
-          >
-            <option value="less important">less important</option>
-            <option value="important">important</option>
-            <option value="very important">very important</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="completed">Completed</label>
-          <input
-            type="checkbox"
-            id="completed"
-            checked={completed}
-            onChange={(e) => setCompleted(e.target.checked)}
-          />
-        </div>
-        <button type="submit" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update Task'}
-        </button>
-        <button type="button" onClick={onClose}>
+    <div className={classes.container}>
+      <Snackbar open={errorMessage !== ''} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="error">
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={isSuccess} autoHideDuration={6000} onClose={handleCloseSnackbar}>
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          {successMessage}
+        </Alert>
+      </Snackbar>
+      <form className={classes.form} onSubmit={handleUpdateTask}>
+        <TextField
+          className={classes.formField}
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          className={classes.formField}
+          label="Description"
+          multiline
+          rows={4}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+        />
+        <TextField
+          className={classes.formField}
+          label="Due Date"
+          type="datetime-local"
+          value={dueDate}
+          onChange={(e) => setFormattedDueDate(e.target.value)}
+          fullWidth
+        />
+        <FormControl className={classes.formField} fullWidth>
+          <InputLabel>Importance</InputLabel>
+          <Select value={importance} onChange={(e) => setImportance(e.target.value)}>
+            <MenuItem value="less important">Less Important</MenuItem>
+            <MenuItem value="important">Important</MenuItem>
+            <MenuItem value="very important">Very Important</MenuItem>
+          </Select>
+        </FormControl>
+        <FormControlLabel
+          className={classes.formField}
+          control={<Checkbox checked={completed} onChange={(e) => setCompleted(e.target.checked)} />}
+          label="Completed"
+        />
+        <Button
+          className={classes.button}
+          type="submit"
+          variant="contained"
+          color="primary"
+          disabled={isLoading}
+          fullWidth
+        >
+          {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Update Task'}
+        </Button>
+        <Button className={classes.button} onClick={onClose} fullWidth>
           Close
-        </button>
+        </Button>
       </form>
     </div>
   );
