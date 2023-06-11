@@ -16,9 +16,13 @@ const useStyles = makeStyles((theme) => ({
   cancelButton: {
     marginLeft: theme.spacing(2),
   },
+  successMessage: {
+    marginTop: theme.spacing(2),
+    color: 'green',
+  },
 }));
 
-const CreateTaskPage = ({ onClose }) => {
+const CreateTaskPage = ({ onClose, onTaskCreated }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [title, setTitle] = useState('');
@@ -26,6 +30,7 @@ const CreateTaskPage = ({ onClose }) => {
   const [dueDate, setDueDate] = useState('');
   const [dueTime, setDueTime] = useState('');
   const [importance, setImportance] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const token = useSelector((state) => state.auth.user.token);
 
@@ -46,17 +51,26 @@ const CreateTaskPage = ({ onClose }) => {
       },
     };
 
-    dispatch(createTask(newTask, config));
+    dispatch(createTask(newTask, config)).then(() => {
+      console.log('New task added:', newTask);
+      setTitle('');
+      setDescription('');
+      setDueDate('');
+      setDueTime('');
+      setImportance('');
 
-    console.log('New task added:', newTask);
+      // Call the onTaskCreated callback if it is provided
+      if (typeof onTaskCreated === 'function') {
+        onTaskCreated();
+      }
 
-    setTitle('');
-    setDescription('');
-    setDueDate('');
-    setDueTime('');
-    setImportance('');
+      setSuccessMessage('Task created successfully!');
 
-    onClose();
+      setTimeout(() => {
+        setSuccessMessage('');
+        onClose();
+      }, 3000);
+    });
   };
 
   const handleCancel = () => {
@@ -66,6 +80,9 @@ const CreateTaskPage = ({ onClose }) => {
   return (
     <div>
       <Typography variant="h5">Create a New Task</Typography>
+      {successMessage && (
+        <Typography className={classes.successMessage}>{successMessage}</Typography>
+      )}
       <form className={classes.form} onSubmit={handleSubmit}>
         <Grid container spacing={2} className={classes.formGroup}>
           <Grid item xs={12}>

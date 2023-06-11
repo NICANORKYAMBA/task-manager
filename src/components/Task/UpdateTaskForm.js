@@ -58,6 +58,7 @@ const UpdateTaskForm = ({ taskId, onClose }) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  const [shouldRefresh, setShouldRefresh] = useState(false); // New state variable
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -106,7 +107,7 @@ const UpdateTaskForm = ({ taskId, onClose }) => {
 
       await dispatch(updateTaskById(userId, taskId, updatedTaskData, config));
       setSuccessMessage('Task updated successfully');
-      setIsSuccess(true);
+      setIsSuccess(true); // Set isSuccess to true after successful update
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
         setErrorMessage(error.response.data.message);
@@ -121,12 +122,19 @@ const UpdateTaskForm = ({ taskId, onClose }) => {
   useEffect(() => {
     if (isSuccess) {
       const closeForm = setTimeout(() => {
-        onClose();
+        onClose(); // Close the form
+        setShouldRefresh(true); // Set shouldRefresh to true after closing the form
       }, 2000);
 
       return () => clearTimeout(closeForm);
     }
   }, [isSuccess, onClose]);
+
+  useEffect(() => {
+    if (shouldRefresh) {
+      window.location.reload(); // Refresh the parent page to update the tasks
+    }
+  }, [shouldRefresh]);
 
   const setFormattedDueDate = (value) => {
     const formattedDate = value.replace('T', ' ').substring(0, 16); // Format the date string

@@ -7,8 +7,11 @@ import {
   Container,
   Grid,
   IconButton,
+  InputAdornment,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const useStyles = makeStyles((theme) => ({
   formContainer: {
@@ -31,6 +34,7 @@ const UpdateUserForm = ({ onUpdate, onClose }) => {
   const classes = useStyles();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -38,6 +42,10 @@ const UpdateUserForm = ({ onUpdate, onClose }) => {
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+  };
+
+  const handleShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleSubmit = (e) => {
@@ -72,21 +80,25 @@ const UpdateUserForm = ({ onUpdate, onClose }) => {
           <Grid item xs={12}>
             <TextField
               fullWidth
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="password"
               label="Password"
               value={password}
               onChange={handlePasswordChange}
               className={classes.formField}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleShowPassword} edge="end">
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           </Grid>
           <Grid item xs={12}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
+            <Button type="submit" variant="contained" color="primary" fullWidth>
               Update
             </Button>
           </Grid>
