@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://task-manager-backend-rho.vercel.app';
+const API_URL = 'web-01.nicanorsolutions.tech/taskifypro';
 
 
 const axiosInstance = axios.create({
