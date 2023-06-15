@@ -62,7 +62,7 @@ export const loginUser = ({ email, password }) => {
 
       if (response.status === 200) {
         const emailParts = email.split('@');
-        const userEmail = emailParts[0]; // Extract the part before '@' symbol
+        const userEmail = emailParts[0];
         const successMessage = message.split(',')[1].trim();
         const user = { email: userEmail, token };
         dispatch(authSuccess(user, userId, userEmail));
@@ -79,7 +79,7 @@ export const loginUser = ({ email, password }) => {
         // Other errors
         dispatch(authFailure("Failed to login"));
       }
-      throw error; // Rethrow the error
+      throw error;
     }
   };
 };

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://task-manager-backend-rho.vercel.app';
 
 
 const axiosInstance = axios.create({
